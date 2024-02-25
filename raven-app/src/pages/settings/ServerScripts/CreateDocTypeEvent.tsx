@@ -1,0 +1,60 @@
+import { DocTypeEventsForm } from "@/components/feature/settings/doctype-events/DocTypeEventsForm"
+import { ErrorBanner } from "@/components/layout/AlertBanner"
+import { useToast } from "@/hooks/useToast"
+import { Box, Button, Flex, Heading, Section } from "@radix-ui/themes"
+import { useFrappeCreateDoc } from "frappe-react-sdk"
+import { FormProvider, useForm } from "react-hook-form"
+import { FiArrowLeft } from "react-icons/fi"
+import { useNavigate } from "react-router-dom"
+
+export interface Props { }
+
+export const CreateDocTypeEvent = (props: Props) => {
+
+    const navigate = useNavigate()
+
+    const methods = useForm()
+
+    const { createDoc, error } = useFrappeCreateDoc()
+
+    const { toast } = useToast()
+
+    const onSubmit = (data: any) => {
+        createDoc('Server Script', {
+            name: data.name,
+            script_type: 'DocType Event',
+            reference_doctype: data.reference_document_type,
+            doctype_event: data.document_event,
+            script: data.script,
+        })
+            .then((doc) => {
+                if (doc) {
+                    navigate(`../${doc?.name}`)
+                }
+                toast({
+                    title: `DocType Event ${data.name} updated`,
+                    variant: 'success',
+                })
+            })
+    }
+    //TODO: Figure out a way to show _server_messages in the UI (especially the script editor might have some errors that we need to show to the user)
+    return (
+        <FormProvider {...methods}>
+            <form onSubmit={methods.handleSubmit(onSubmit)}>
+                <Box className="lg:mx-[10rem] md:mx-[5rem] mt-9">
+                    <Button variant="ghost" onClick={() => navigate('../../doctype-events')}>
+                        <FiArrowLeft /> DocType Events
+                    </Button>
+                    <Flex justify={'between'} mt={'6'}>
+                        <Heading>New DocType Event</Heading>
+                        <Button type='submit'>Save</Button>
+                    </Flex>
+                    <Section size={'2'}>
+                        <ErrorBanner error={error} />
+                        <DocTypeEventsForm />
+                    </Section>
+                </Box>
+            </form>
+        </FormProvider>
+    )
+}
