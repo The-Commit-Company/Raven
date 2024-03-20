@@ -3,7 +3,10 @@ import { IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonLabe
 import { addSharp, alertCircle, checkmarkCircle, closeCircleOutline } from 'ionicons/icons';
 import { getFileExtension } from '../../../../../raven-app/src/utils/operations';
 import { getFileExtensionIcon } from '../../../utils/layout/fileExtensions';
-import { useFrappeCreateDoc, useFrappeFileUpload, useFrappeUpdateDoc } from 'frappe-react-sdk';
+import { useFrappeFileUpload } from 'frappe-react-sdk';
+import { useGetUser } from '@/hooks/useGetUser';
+import { useGetChannelData } from '@/hooks/useGetChannelData';
+import { DMChannelListItem } from '@/utils/channel/ChannelListProvider';
 
 type Props = {
     files: File[],
@@ -21,7 +24,21 @@ export const FileUploadModal = ({ files, setFiles, pickFiles, channelID, onMessa
 
     const [loading, setLoading] = useState(false)
     const [errorMap, setErrorMap] = React.useState<{ [key: string]: string }>({})
-
+    const { channel } = useGetChannelData(channelID)
+    
+    const generateDescriptionMessage = (channel: DMChannelListItem) =>{
+        let text = "Files will be shared with "
+        if(channel.is_direct_message===1 && channel.is_self_message===0){
+            const user = useGetUser(channel.peer_user_id)
+            return text + user?.full_name || user?.first_name
+        }else if(channel.is_direct_message===1 && channel.is_self_message===1){
+            // ** should the line be changed?
+            return "Files will be stored here for your reference"
+        } else{
+            return text + "all channel members"
+        }
+    }
+    
 
     const uploadFiles = async () => {
         setLoading(true)
@@ -81,7 +98,7 @@ export const FileUploadModal = ({ files, setFiles, pickFiles, channelID, onMessa
             </IonHeader>
             <IonContent>
                 <div className='py-2 mt-2 px-4 text-sm'>
-                    <IonText color='medium'>Files will be shared with all channel members.</IonText>
+                    <IonText color='medium'>{generateDescriptionMessage(channel as DMChannelListItem)}.</IonText>
                 </div>
                 <IonList>
                     {files.map((f, i) => <IonItem key={f.name + i}>
