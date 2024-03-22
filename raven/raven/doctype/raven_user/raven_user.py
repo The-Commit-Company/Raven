@@ -5,6 +5,7 @@ import frappe
 from frappe.model.document import Document
 from frappe import _
 
+
 class RavenUser(Document):
 	# begin: auto-generated types
 	# This code is auto-generated. Do not modify anything in this block.

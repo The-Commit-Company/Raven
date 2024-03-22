@@ -7,7 +7,7 @@ import { BiDotsHorizontalRounded } from 'react-icons/bi'
 import { UserAvatar } from '@/components/common/UserAvatar'
 import { isSystemManager } from '@/utils/roles'
 
-export const SidebarFooter = () => {
+export const SidebarFooter = ({ isSettingsPage = false }: { isSettingsPage?: boolean }) => {
 
     const userData = useUserData()
     const { logout } = useContext(UserContext)
@@ -57,6 +57,11 @@ export const SidebarFooter = () => {
                                     Mobile App
                                 </Link>
                             </DropdownMenu.Item>
+                            {!isSettingsPage && <DropdownMenu.Item color='gray' className='group'>
+                                <Link href="../settings" className='no-underline'>
+                                    Settings
+                                </Link>
+                            </DropdownMenu.Item>}
                             <DropdownMenu.Item onClick={logout} color='red' className='cursor-pointer'>
                                 Log Out
                             </DropdownMenu.Item>

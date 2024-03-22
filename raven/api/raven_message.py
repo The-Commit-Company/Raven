@@ -6,11 +6,6 @@ from frappe.query_builder.functions import Count, Coalesce
 from frappe.query_builder import Case, Order, JoinType
 import json
 from raven.api.raven_channel import get_peer_user_id
-channel = frappe.qb.DocType("Raven Channel")
-channel_member = frappe.qb.DocType("Raven Channel Member")
-message = frappe.qb.DocType('Raven Message')
-user = frappe.qb.DocType("User")
-
 
 def track_visit(channel_id, commit=False):
     '''
@@ -227,6 +222,11 @@ def get_unread_count_for_channels():
 
 @frappe.whitelist()
 def get_timeline_message_content(doctype, docname):
+
+    channel = frappe.qb.DocType("Raven Channel")
+    channel_member = frappe.qb.DocType("Raven Channel Member")
+    message = frappe.qb.DocType('Raven Message')
+    user = frappe.qb.DocType("User")
 
     query = (frappe.qb.from_(message)
              .select(message.creation, message.owner, message.name, message.text, message.file, channel.name.as_('channel_id'), channel.channel_name, channel.type, channel.is_direct_message, user.full_name, channel.is_self_message)

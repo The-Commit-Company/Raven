@@ -1,0 +1,220 @@
+{
+ "actions": [],
+ "autoname": "prompt",
+ "creation": "2024-02-23 13:21:14.329211",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sb_doc_events",
+  "enabled",
+  "trigger_webhook_on_condition",
+  "channel_id",
+  "user",
+  "channel_type",
+  "condition",
+  "cb_condition",
+  "webhook_trigger",
+  "conditions_on",
+  "html_condition",
+  "sb_webhook",
+  "request_url",
+  "timeout",
+  "is_dynamic_url",
+  "cb_webhook",
+  "sb_security",
+  "enable_security",
+  "webhook_secret",
+  "sb_webhook_headers",
+  "webhook_headers",
+  "sb_webhook_data",
+  "webhook_data",
+  "webhook"
+ ],
+ "fields": [
+  {
+   "fieldname": "sb_doc_events",
+   "fieldtype": "Section Break",
+   "label": "Doc Events"
+  },
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
+  },
+  {
+   "depends_on": "eval:doc.conditions_on === 'Custom'",
+   "description": "The webhook will be triggered if this expression is true",
+   "fieldname": "condition",
+   "fieldtype": "Small Text",
+   "label": "Condition",
+   "mandatory_depends_on": "eval:doc.conditions_on === 'Custom'"
+  },
+  {
+   "fieldname": "cb_condition",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.conditions_on === 'Custom'",
+   "fieldname": "html_condition",
+   "fieldtype": "HTML",
+   "options": "<p><strong>Condition Examples:</strong></p>\n<pre>doc.status==\"Open\"<br>doc.due_date==nowdate()<br>doc.total &gt; 40000\n</pre>"
+  },
+  {
+   "fieldname": "sb_webhook",
+   "fieldtype": "Section Break",
+   "label": "Webhook Request"
+  },
+  {
+   "fieldname": "request_url",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Request URL",
+   "reqd": 1
+  },
+  {
+   "default": "5",
+   "description": "The number of seconds until the request expires",
+   "fieldname": "timeout",
+   "fieldtype": "Int",
+   "label": "Request Timeout",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "description": "On checking this option, URL will be treated like a jinja template string",
+   "fieldname": "is_dynamic_url",
+   "fieldtype": "Check",
+   "label": "Is Dynamic URL?"
+  },
+  {
+   "fieldname": "cb_webhook",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sb_security",
+   "fieldtype": "Section Break",
+   "label": "Webhook Security"
+  },
+  {
+   "default": "0",
+   "fieldname": "enable_security",
+   "fieldtype": "Check",
+   "label": "Enable Security"
+  },
+  {
+   "depends_on": "eval:doc.enable_security == 1",
+   "fieldname": "webhook_secret",
+   "fieldtype": "Password",
+   "label": "Webhook Secret"
+  },
+  {
+   "fieldname": "sb_webhook_headers",
+   "fieldtype": "Section Break",
+   "label": "Webhook Headers"
+  },
+  {
+   "fieldname": "webhook_headers",
+   "fieldtype": "Table",
+   "label": "Headers",
+   "options": "Webhook Header"
+  },
+  {
+   "fieldname": "sb_webhook_data",
+   "fieldtype": "Section Break",
+   "label": "Webhook Data"
+  },
+  {
+   "depends_on": "eval: !doc.request_structure || doc.request_structure == \"Form URL-Encoded\"",
+   "fieldname": "webhook_data",
+   "fieldtype": "Table",
+   "label": "Data",
+   "options": "Webhook Data"
+  },
+  {
+   "fieldname": "webhook_trigger",
+   "fieldtype": "Select",
+   "label": "Webhook Trigger",
+   "options": "Message Sent\nMessage Edited\nMessage Deleted\nMessage Reacted On\nChannel Created\nChannel Deleted\nChannel Member Added\nChannel Member Deleted\nUser Added\nUser Deleted",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "trigger_webhook_on_condition",
+   "fieldtype": "Check",
+   "label": "Trigger Webhook on Condition"
+  },
+  {
+   "depends_on": "eval:doc.trigger_webhook_on_condition===1",
+   "fieldname": "conditions_on",
+   "fieldtype": "Select",
+   "label": "Conditions On",
+   "mandatory_depends_on": "eval:doc.trigger_webhook_on_condition===1",
+   "options": "\nChannel\nUser\nChannel Type\nCustom"
+  },
+  {
+   "depends_on": "eval:doc.conditions_on === 'Channel'",
+   "fieldname": "channel_id",
+   "fieldtype": "Link",
+   "label": "Channel",
+   "mandatory_depends_on": "eval:doc.conditions_on === 'Channel'",
+   "options": "Raven Channel"
+  },
+  {
+   "depends_on": "eval:doc.conditions_on === 'User'",
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User",
+   "mandatory_depends_on": "eval:doc.conditions_on === 'User'",
+   "options": "Raven User"
+  },
+  {
+   "depends_on": "eval:doc.conditions_on ==='Channel Type'",
+   "fieldname": "channel_type",
+   "fieldtype": "Select",
+   "label": "Channel Type",
+   "mandatory_depends_on": "eval:doc.conditions_on ==='Channel Type'",
+   "options": "\nPublic\nPrivate\nOpen\nDM\nSelf Message"
+  },
+  {
+   "fieldname": "webhook",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Webhook",
+   "options": "Webhook"
+  }
+ ],
+ "links": [
+  {
+   "link_doctype": "Webhook Request Log",
+   "link_fieldname": "webhook"
+  }
+ ],
+ "modified": "2024-02-23 18:29:18.230912",
+ "modified_by": "Administrator",
+ "module": "Raven Integrations",
+ "name": "Raven Webhook",
+ "naming_rule": "Set by user",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

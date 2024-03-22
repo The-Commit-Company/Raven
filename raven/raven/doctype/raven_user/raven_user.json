@@ -1,14 +1,15 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:user",
  "creation": "2023-09-06 14:36:48.631681",
  "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "type",
   "user",
+  "bot",
   "full_name",
   "first_name",
   "user_image",
@@ -17,11 +18,12 @@
  ],
  "fields": [
   {
+   "depends_on": "eval: doc.type == 'Human'",
    "fieldname": "user",
    "fieldtype": "Link",
    "label": "User",
+   "mandatory_depends_on": "eval: doc.type == 'Human'",
    "options": "User",
-   "reqd": 1,
    "unique": 1
   },
   {
@@ -32,7 +34,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Full Name",
-   "reqd": 1
+   "mandatory_depends_on": "eval: doc.type == 'Human'"
   },
   {
    "fetch_from": "user.first_name",
@@ -41,6 +43,7 @@
    "label": "First Name"
   },
   {
+   "depends_on": "eval: doc.type == 'Human'",
    "fetch_from": ".",
    "fieldname": "user_image",
    "fieldtype": "Attach Image",
@@ -57,6 +60,20 @@
    "fieldname": "html_xuuw",
    "fieldtype": "HTML",
    "options": "<p>To disable the user from accessing Raven, go to \"Users\" and remove the \"Raven User\" role.</p>"
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "User\nBot",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval: doc.type == 'Bot'",
+   "fieldname": "bot",
+   "fieldtype": "Link",
+   "label": "Bot",
+   "options": "Raven Bot"
   }
  ],
  "image_field": "user_image",
@@ -65,7 +82,7 @@
  "modified_by": "Administrator",
  "module": "Raven",
  "name": "Raven User",
- "naming_rule": "By fieldname",
+ "naming_rule": "By script",
  "owner": "Administrator",
  "permissions": [
   {

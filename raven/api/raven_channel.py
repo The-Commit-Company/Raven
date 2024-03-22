@@ -2,10 +2,6 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 
-channel = frappe.qb.DocType("Raven Channel")
-channel_member = frappe.qb.DocType("Raven Channel Member")
-
-
 @frappe.whitelist()
 def get_all_channels(hide_archived=True):
     '''
@@ -48,6 +44,8 @@ def get_all_channels(hide_archived=True):
 
 def get_channel_list(hide_archived=False):
     # get List of all channels where current user is a member (all includes public, private, open, and DM channels)
+    channel = frappe.qb.DocType("Raven Channel")
+    channel_member = frappe.qb.DocType("Raven Channel Member")
     query = (frappe.qb.from_(channel)
              .select(channel.name, channel.channel_name, channel.type, channel.channel_description, channel.is_archived, channel.is_direct_message, channel.is_self_message, channel.creation, channel.owner).distinct()
              .left_join(channel_member)

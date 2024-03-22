@@ -1,5 +1,5 @@
 import { FrappeProvider } from 'frappe-react-sdk'
-import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom'
+import { Outlet, Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom'
 import { MainPage } from './pages/MainPage'
 import { ProtectedRoute } from './utils/auth/ProtectedRoute'
 import { UserProvider } from './utils/auth/UserProvider'
@@ -9,7 +9,10 @@ import { ThemeProvider } from './ThemeProvider'
 import { Toaster } from './components/common/Toast/Toaster'
 import { FullPageLoader } from './components/layout/Loaders'
 import { useStickyState } from './hooks/useStickyState'
-
+import { Settings } from './pages/settings/Settings'
+import { CreateWebhook } from './components/feature/integrations/webhooks/CreateWebhook'
+import ViewWebhook from './components/feature/integrations/webhooks/ViewWebhook'
+import { WebhookList } from './components/feature/integrations/webhooks/WebhookList'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -18,11 +21,19 @@ const router = createBrowserRouter(
       <Route path='/login-with-email' lazy={() => import('@/pages/auth/LoginWithEmail')} />
       <Route path='/signup' lazy={() => import('@/pages/auth/SignUp')} />
       <Route path="/" element={<ProtectedRoute />}>
-        <Route index element={<ChannelRedirect />} />
-        <Route path="channel" element={<MainPage />} >
-          <Route index element={<ChannelRedirect />} />
-          <Route path="saved-messages" lazy={() => import('./components/feature/saved-messages/SavedMessages')} />
-          <Route path=":channelID" lazy={() => import('@/pages/ChatSpace')} />
+        <Route path="/" element={<ChannelRedirect />}>
+          <Route path="channel" element={<MainPage />} >
+            <Route index element={<ChannelRedirect />} />
+            <Route path="saved-messages" lazy={() => import('./components/feature/saved-messages/SavedMessages')} />
+            <Route path=":channelID" lazy={() => import('@/pages/ChatSpace')} />
+          </Route>
+          <Route path='settings' element={<Settings />}>
+            <Route path='integrations'>
+              <Route path='webhooks' element={<WebhookList />} />
+              <Route path='webhooks/create' element={<CreateWebhook />} />
+              <Route path='webhooks/:ID' element={<ViewWebhook />} />
+            </Route>
+          </Route>
         </Route>
       </Route>
     </>
