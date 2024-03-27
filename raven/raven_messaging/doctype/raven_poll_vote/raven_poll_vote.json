@@ -1,0 +1,93 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-03-22 16:02:03.878821",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_user",
+  "user_id",
+  "section_break_poll",
+  "poll_id",
+  "section_break_vote",
+  "option"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_user",
+   "fieldtype": "Section Break",
+   "label": "User"
+  },
+  {
+   "fieldname": "user_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "User",
+   "options": "Raven User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_poll",
+   "fieldtype": "Section Break",
+   "label": "Poll"
+  },
+  {
+   "fieldname": "poll_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Poll",
+   "options": "Raven Poll",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_vote",
+   "fieldtype": "Section Break",
+   "label": "Vote"
+  },
+  {
+   "fieldname": "option",
+   "fieldtype": "Data",
+   "label": "Option",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-03-22 20:08:19.982449",
+ "modified_by": "Administrator",
+ "module": "Raven Messaging",
+ "name": "Raven Poll Vote",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "if_owner": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Raven User",
+   "share": 1
+  },
+  {
+   "read": 1,
+   "role": "Raven User"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,103 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-03-22 15:55:33.483101",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_poll_question",
+  "question",
+  "section_break_poll_options",
+  "options",
+  "section_break_poll_settings",
+  "is_anonymous",
+  "is_multi_choice",
+  "is_disabled"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_poll_question",
+   "fieldtype": "Section Break",
+   "label": "Poll Question"
+  },
+  {
+   "fieldname": "question",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Question",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_poll_options",
+   "fieldtype": "Section Break",
+   "label": "Poll Options"
+  },
+  {
+   "fieldname": "options",
+   "fieldtype": "Table",
+   "label": "Options",
+   "options": "Raven Poll Option",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_poll_settings",
+   "fieldtype": "Section Break",
+   "label": "Poll Settings"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_anonymous",
+   "fieldtype": "Check",
+   "label": "Is Anonymous"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_multi_choice",
+   "fieldtype": "Check",
+   "label": "Is Multi Choice"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_disabled",
+   "fieldtype": "Check",
+   "label": "Is Disabled"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-03-22 20:06:00.593543",
+ "modified_by": "Administrator",
+ "module": "Raven Messaging",
+ "name": "Raven Poll",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "if_owner": 1,
+   "read": 1,
+   "role": "Raven User"
+  },
+  {
+   "read": 1,
+   "role": "Raven User"
+  }
+ ],
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "question"
+}

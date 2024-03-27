@@ -220,6 +220,8 @@ has_permission = {
 	"Raven Channel": "raven.permissions.channel_has_permission",
 	"Raven Channel Member": "raven.permissions.channel_member_has_permission",
 	"Raven Message": "raven.permissions.message_has_permission",
+	"Raven Poll Vote": "raven.permissions.raven_poll_vote_has_permission",
+    "Raven Poll": "raven.permissions.raven_poll_has_permission",
 }
 
 on_session_creation = "raven.api.user_availability.set_user_active"

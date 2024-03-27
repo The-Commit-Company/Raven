@@ -67,6 +67,62 @@ def message_has_permission(doc, user=None, ptype=None):
 		return False
 
 
+def raven_poll_vote_has_permission(doc, user=None, ptype=None):
+
+	if not user:
+		user = frappe.session.user
+	
+	"""
+		Check if user has access to the channel where the poll message is posted
+		Allowed users can add a vote to a poll and read votes (if the poll is not anonymous)
+	"""
+	
+	raven_message = frappe.get_all("Raven Message", filters={"poll_id": doc.poll_id}, fields=["channel_id"])
+	if raven_message:
+		channel_id = raven_message[0].channel_id
+		channel_has_permission(frappe.get_doc("Raven Channel", channel_id), user, ptype)
+
+		if ptype in ["read", "create"]:
+			if doc.owner == user:
+				return True
+			elif user == "Administrator":
+				return True
+			else:
+				is_anonymous = frappe.get_cached_value("Raven Poll", doc.poll_id, "is_anonymous")
+				if not is_anonymous:
+					if ptype == "read":
+						return True
+
+	return False
+
+def raven_poll_has_permission(doc, user=None, ptype=None):
+
+	if not user:
+		user = frappe.session.user
+	
+	"""
+		Check if user has access to the channel where the poll message is posted
+		Allowed users can create a poll and read polls. 
+		Only the poll creator can delete the poll
+	"""
+
+	raven_message = frappe.get_all("Raven Message", filters={"poll_id": doc.name}, fields=["channel_id"])
+	if raven_message:
+		channel_id = raven_message[0].channel_id
+		channel_has_permission(frappe.get_doc("Raven Channel", channel_id), user, ptype)
+
+		if ptype in ["read", "create", "delete"]:
+			if doc.owner == user:
+				return True
+			elif user == "Administrator":
+				return True
+			else:
+				if ptype == "read":
+					return True
+
+	return False
+
+
 def raven_channel_query(user):
 	if not user:
 		user = frappe.session.user

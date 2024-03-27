@@ -18,7 +18,6 @@ class RavenMessage(Document):
 
 	if TYPE_CHECKING:
 		from frappe.types import DF
-
 		from raven.raven_messaging.doctype.raven_mention.raven_mention import RavenMention
 
 		channel_id: DF.Link
@@ -35,7 +34,8 @@ class RavenMessage(Document):
 		linked_message: DF.Link | None
 		mentions: DF.Table[RavenMention]
 		message_reactions: DF.JSON | None
-		message_type: DF.Literal["Text", "Image", "File"]
+		message_type: DF.Literal["Text", "Image", "File", "Poll"]
+		poll_id: DF.Link | None
 		replied_message_details: DF.JSON | None
 		text: DF.LongText | None
 		thumbnail_height: DF.Data | None
@@ -64,6 +64,10 @@ class RavenMessage(Document):
 		1. If there is a linked message, the linked message should be in the same channel
 		"""
 		self.validate_linked_message()
+		"""
+		2. If the message is of type Poll, the poll_id should be set
+		"""
+		self.validate_poll_id()
 
 	def validate_linked_message(self):
 		"""
@@ -72,6 +76,13 @@ class RavenMessage(Document):
 		if self.linked_message:
 			if frappe.db.get_value("Raven Message", self.linked_message, "channel_id") != self.channel_id:
 				frappe.throw(_("Linked message should be in the same channel"))
+	
+	def validate_poll_id(self):
+		"""
+		If the message is of type Poll, the poll_id should be set
+		"""
+		if self.message_type == "Poll" and not self.poll_id:
+			frappe.throw(_("Poll ID is mandatory for a poll message"))
 
 	def before_insert(self):
 		"""
@@ -196,6 +207,7 @@ class RavenMessage(Document):
 						"text": self.text,
 						"content": self.content,
 						"file": self.file,
+						"poll_id": self.poll_id,
 						"message_type": self.message_type,
 						"is_edited": 1 if self.is_edited else 0,
 						"is_reply": self.is_reply,
@@ -229,6 +241,7 @@ class RavenMessage(Document):
 						"message_type": self.message_type,
 						"is_edited": 1 if self.is_edited else 0,
 						"is_reply": self.is_reply,
+						"poll_id": self.poll_id,
 						"creation": self.creation,
 						"owner": self.owner,
 						"modified_by": self.modified_by,
@@ -256,6 +269,9 @@ class RavenMessage(Document):
 	def on_trash(self):
 		# delete all the reactions for the message
 		frappe.db.delete("Raven Message Reaction", {"message": self.name})
+		# delete poll if the message is of type poll
+		if self.message_type == "Poll":
+			frappe.delete_doc("Raven Poll", self.poll_id)
 
 
 def on_doctype_update():

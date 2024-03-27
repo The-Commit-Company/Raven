@@ -27,7 +27,8 @@
   "link_doctype",
   "link_document",
   "is_edited",
-  "mentions"
+  "mentions",
+  "poll_id"
  ],
  "fields": [
   {
@@ -59,7 +60,7 @@
    "fieldname": "message_type",
    "fieldtype": "Select",
    "label": "Message Type",
-   "options": "Text\nImage\nFile"
+   "options": "Text\nImage\nFile\nPoll"
   },
   {
    "fieldname": "message_reactions",
@@ -141,11 +142,18 @@
    "fieldtype": "Table",
    "label": "Mentions",
    "options": "Raven Mention"
+  },
+  {
+   "fieldname": "poll_id",
+   "fieldtype": "Link",
+   "label": "Poll ID",
+   "options": "Raven Poll",
+   "unique": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-02-28 03:48:53.487969",
+ "modified": "2024-03-22 20:32:00.832777",
  "modified_by": "Administrator",
  "module": "Raven Messaging",
  "name": "Raven Message",
