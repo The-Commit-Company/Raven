@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
-
 const MomentConverter = lazy(() => import("./MomentConverter"));
+import { USER_TIMEZONE } from "./utils";
 
 interface Props {
     date: string;
@@ -32,9 +32,13 @@ export const DateMonthYear = (props: Props) => {
         const dateObj = new Date(date)
         return dateObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
     }
+    const date = new Date();
+    const currentDate = new Date().toLocaleString('en-US', { timeZone: USER_TIMEZONE });
     return (
         <Suspense fallback={parseDateString(props.date)}>
-            <MomentConverter {...props} format="Do MMMM YYYY" />
+            {parseDateString(currentDate) === parseDateString(props.date) ?
+                "Today" :
+                <MomentConverter {...props} format="Do MMMM YYYY" />}
         </Suspense>
     )
 }

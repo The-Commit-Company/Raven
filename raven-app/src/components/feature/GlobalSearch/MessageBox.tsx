@@ -1,12 +1,16 @@
 import { useGetUserRecords } from "@/hooks/useGetUserRecords"
 import { useCurrentChannelData } from "@/hooks/useCurrentChannelData"
 import { DMChannelListItem } from "@/utils/channel/ChannelListProvider"
-import { Box, Flex, Link, Separator, Text } from '@radix-ui/themes'
+import { Box, Button, Flex, Link, Separator, Text, Tooltip } from '@radix-ui/themes'
 import { MessageSenderAvatar, MessageContent, UserHoverCard } from "../chat/ChatMessage/MessageItem"
 import { useGetUser } from "@/hooks/useGetUser"
 import { Message } from "../../../../../types/Messaging/Message"
 import { useMemo } from "react"
 import { DateMonthYear } from "@/utils/dateConversions"
+import { BiBookmarkMinus } from "react-icons/bi"
+import { useToast } from "@/hooks/useToast"
+import { FrappeConfig, FrappeContext } from "frappe-react-sdk"
+import { useContext } from "react"
 
 type MessageBoxProps = {
     message: Message
@@ -33,6 +37,31 @@ export const MessageBox = ({ message, handleScrollToMessage }: MessageBoxProps) 
         }
     }, [channelData])
 
+    const { call } = useContext(FrappeContext) as FrappeConfig
+    const { toast } = useToast()
+
+    const handleUnsavefromSavedMessages = (msg: Message) => {
+
+        call.post('frappe.desk.like.toggle_like', {
+            doctype: 'Raven Message',
+            name: msg.name,
+            add: 'No',
+        }).then(() => {
+            toast({
+                title: 'Message unsaved',
+                variant: 'accent',
+                duration: 800,
+            })
+        })
+            .catch(() => {
+                toast({
+                    title: 'Could not perform the action',
+                    variant: 'destructive',
+                    duration: 800,
+                })
+            })
+    }
+
     return (
         <Flex direction='column' gap='2' className="group
         hover:bg-gray-100
@@ -47,6 +76,11 @@ export const MessageBox = ({ message, handleScrollToMessage }: MessageBoxProps) 
                 <Link size='1' className="invisible group-hover:visible" onClick={() => handleScrollToMessage(message.name, channel_id)}>
                     View in channel
                 </Link>
+                <Tooltip content="Unsave Message">
+                    <Button size='2' className="invisible group-hover:visible" style={{ marginLeft: 'auto' }} onClick={() => handleUnsavefromSavedMessages(message)}>
+                        <BiBookmarkMinus size='22' />
+                    </Button>
+                </Tooltip>
             </Flex>
 
             <Flex gap='3'>
