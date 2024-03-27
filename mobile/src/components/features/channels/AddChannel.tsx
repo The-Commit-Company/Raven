@@ -1,11 +1,16 @@
-import { IonButton, IonButtons, IonContent, ToastOptions, IonHeader, IonInput, IonItem, IonItemDivider, IonItemGroup, IonLabel, IonList, IonModal, IonRadio, IonRadioGroup, IonText, IonTextarea, IonTitle, IonToolbar, useIonToast } from "@ionic/react";
+import { IonContent, ToastOptions, IonModal, useIonToast } from "@ionic/react";
 import { useFrappeCreateDoc } from "frappe-react-sdk";
-import { useCallback, useRef, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 import { BiGlobe, BiHash, BiLockAlt } from "react-icons/bi";
 import { useHistory } from "react-router-dom";
 import { ErrorBanner } from "../../layout";
 import { useChannelList } from "@/utils/channel/ChannelListProvider";
+import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage, Form } from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Button } from "@/components/ui/button";
 
 interface AddChannelProps {
     presentingElement: HTMLElement | undefined,
@@ -22,7 +27,13 @@ type CreateChannelInputs = {
 export const AddChannel = ({ presentingElement, isOpen, onDismiss }: AddChannelProps) => {
 
     const modal = useRef<HTMLIonModalElement>(null)
-    const { register, control, handleSubmit, formState: { errors }, setValue, reset: resetForm } = useForm<CreateChannelInputs>()
+    const form = useForm<CreateChannelInputs>({
+        defaultValues: {
+            channel_name: "",
+            channel_description: "",
+            channel_type: "Public"
+        }
+    })
     const [channelType, setChannelType] = useState<CreateChannelInputs['channel_type']>('Public')
 
     const { createDoc, error: channelCreationError, reset } = useFrappeCreateDoc()
@@ -47,7 +58,7 @@ export const AddChannel = ({ presentingElement, isOpen, onDismiss }: AddChannelP
         createDoc('Raven Channel', {
             channel_name: data.channel_name,
             channel_description: data.channel_description,
-            type: channelType
+            type: data.channel_type
         }).catch((err) => {
             if (err.httpStatus === 409) {
                 presentToast("Channel name already exists.", 'danger')
@@ -57,7 +68,7 @@ export const AddChannel = ({ presentingElement, isOpen, onDismiss }: AddChannelP
             }
         }).then((result) => {
             name = result.name
-            resetForm()
+            form.reset()
             return mutate()
         }).then(() => {
             presentToast("Channel created successfully.", 'success')
@@ -66,125 +77,157 @@ export const AddChannel = ({ presentingElement, isOpen, onDismiss }: AddChannelP
         })
     }
 
-
-    const handleNameChange = useCallback((value?: string | null) => {
-        setValue('channel_name', value?.toLowerCase().replace(' ', '-') ?? '')
-    }, [setValue])
+    const handleCancel = () => {
+        form.reset()
+        onDismiss()
+    }
 
 
     return (
-        <IonModal ref={modal} onDidDismiss={onDismiss} isOpen={isOpen} presentingElement={presentingElement}>
-            <IonHeader>
-                <IonToolbar>
-                    <IonButtons slot="start">
-                        <IonButton color={'medium'} onClick={onDismiss}>Cancel</IonButton>
-                    </IonButtons>
-                    <IonTitle>Create Channel</IonTitle>
-                    <IonButtons slot="end">
-                        <IonButton color={'primary'} onClick={handleSubmit(onSubmit)}>Create</IonButton>
-                    </IonButtons>
-                </IonToolbar>
-            </IonHeader>
-            <IonContent>
+        <IonModal ref={modal} onDidDismiss={handleCancel} isOpen={isOpen} presentingElement={presentingElement}>
+            <div className='block relative z-10 w-full'>
+                <div className='px-4 py-2 inset-x-0 top-0 overflow-hidden items-center min-h-5 bg-background border-b-foreground/10 border-b'>
+                    <div className='flex gap-5 items-center justify-around'>
+                        <div>
+                            <Button variant="ghost" className="hover:bg-transparent hover:text-foreground/80" onClick={handleCancel}>
+                                Cancel
+                            </Button>
+                        </div>
+                        <span className="text-base font-medium">Create Channel</span>
+                        <div>
+                            <Button variant="ghost" className="text-primary hover:bg-transparent" onClick={form.handleSubmit(onSubmit)}>Create</Button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <IonContent className="ion-padding">
                 <ErrorBanner error={channelCreationError} />
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <IonList>
-                        <IonItemGroup>
-                            <IonItemDivider className="py-1">
-                                <IonLabel>Channel Name</IonLabel>
-                            </IonItemDivider>
-                            <IonItem lines='none' className="pb-2">
-                                <div slot='start'>
-                                    {channelType === 'Public' && <BiHash size='16' color='var(--ion-color-medium)' />}
-                                    {channelType === 'Private' && <BiLockAlt size='16' color='var(--ion-color-medium)' />}
-                                    {channelType === 'Open' && <BiGlobe size='16' color='var(--ion-color-medium)' />}
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)}>
+                        <ul>
+                            <div>
+                                <li className="list-none">
+                                    <div className="p-2">
+                                        <FormField
+                                            name='channel_name'
+                                            control={form.control}
+                                            rules={{
+                                                required: "Channel name is required",
+                                                maxLength: {
+                                                    value: 50,
+                                                    message: "Channel name can be atmost 50 characters."
+                                                },
+                                                pattern: {
+                                                    // no special characters allowed
+                                                    // cannot start with a space
+                                                    value: /^[a-zA-Z0-9][a-zA-Z0-9-]*$/,
+                                                    message: "Channel name can only contain letters, numbers and hyphens."
+                                                }
+                                            }}
+                                            render={({ field, formState }) => (
+                                                <FormItem className="flex flex-col">
+                                                    <FormLabel className="font-semibold">Channel Name <span className='text-rose-600'>*</span></FormLabel>
+                                                    <div className="flex items-center gap-2">
+                                                        <FormControl>
+                                                            <Input
+                                                                required
+                                                                autoCapitalize="off"
+                                                                autoComplete="off"
+                                                                placeholder='bugs-bugs-bugs'
+                                                                aria-label="Channel Name"
+                                                                {...field}
+                                                                onChange={(e) => field.onChange(e.target.value?.toLowerCase().replace(' ', '-') ?? '')}
+                                                            />
+                                                        </FormControl>
+                                                    </div>
+                                                    <FormMessage>{formState.errors && formState.errors?.channel_name?.message}</FormMessage>
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                </li>
+                            </div>
+                            <div>
+                                <li className="list-none">
+                                    <div className="p-2">
+                                        <FormField
+                                            control={form.control}
+                                            name="channel_description"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className="font-semibold">Channel Description</FormLabel>
+                                                    <FormControl>
+                                                        <Textarea
+                                                            placeholder="A channel for reporting bugs"
+                                                            className="resize-none"
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                </li>
+                            </div>
+                            <div>
+                                <div className="p-2">
+                                    <FormField
+                                        control={form.control}
+                                        name="channel_type"
+                                        render={({ field }) => (
+                                            <FormItem >
+                                                <FormLabel className="font-semibold">Channel Type</FormLabel>
+                                                <FormControl>
+                                                    <RadioGroup
+                                                        onValueChange={field.onChange}
+                                                        defaultValue={field.value}
+                                                        className="flex flex-col"
+                                                    >
+                                                        <FormItem className="flex items-center space-y-1 p-1">
+                                                            <FormLabel className="font-normal flex gap-2 grow">
+                                                                <BiHash size='16' />
+                                                                <span>Public</span>
+                                                            </FormLabel>
+                                                            <FormControl>
+                                                                <RadioGroupItem value="Public" />
+                                                            </FormControl>
+                                                        </FormItem>
+                                                        <FormItem className="flex items-center space-y-1 p-1">
+                                                            <FormLabel className="font-normal flex gap-2 grow">
+                                                                <BiLockAlt size='16' />
+                                                                <span>Private</span>
+                                                            </FormLabel>
+                                                            <FormControl>
+                                                                <RadioGroupItem value="Private" />
+                                                            </FormControl>
+                                                        </FormItem>
+                                                        <FormItem className="flex items-center space-y-1 p-1">
+                                                            <FormLabel className="font-normal flex gap-2 grow">
+                                                                <BiGlobe size='16' />
+                                                                <span>Open</span>
+                                                            </FormLabel>
+                                                            <FormControl>
+                                                                <RadioGroupItem value="Open" />
+                                                            </FormControl>
+                                                        </FormItem>
+                                                    </RadioGroup>
+                                                </FormControl>
+                                                <FormDescription>
+                                                    {form.watch("channel_type") === 'Public' && <span className="text-sm text-foreground/80">When a channel is set to public, anyone can join the channel and read messages, but only members can post messages.</span>}
+                                                    {form.watch("channel_type") === 'Private' && <span className="text-sm text-foreground/80">When a channel is set to private, it can only be viewed or joined by invitation.</span>}
+                                                    {form.watch("channel_type") === 'Open' && <span className="text-sm text-foreground/80">When a channel is set to open, everyone is a member.</span>}
+                                                </FormDescription>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
                                 </div>
-                                <Controller
-                                    name='channel_name'
-                                    control={control}
-                                    rules={{
-                                        required: "Channel name is required",
-                                        maxLength: 50,
-                                        pattern: {
-                                            // no special characters allowed
-                                            // cannot start with a space
-                                            value: /^[a-zA-Z0-9][a-zA-Z0-9-]*$/,
-                                            message: "Channel name can only contain letters, numbers and hyphens."
-                                        }
-                                    }}
-                                    render={({ field }) => <IonInput
-                                        required
-                                        maxlength={50}
-                                        autoCapitalize="off"
-                                        value={field.value}
-                                        placeholder='bugs-bugs-bugs'
-                                        className={!!errors?.channel_name ? 'ion-invalid ion-touched' : ''}
-                                        aria-label="Channel Name"
-                                        errorText={errors?.channel_name?.message}
-                                        onIonInput={(e) => handleNameChange(e.target.value as string)}
-                                    />}
-                                />
-                            </IonItem>
-                        </IonItemGroup>
+                            </div>
 
-                        <IonItemGroup>
-                            <IonItemDivider className="py-1">
-                                <IonLabel>Description</IonLabel>
-                            </IonItemDivider>
-                            <IonItem lines='none'>
-                                <IonTextarea
-                                    {...register("channel_description")}
-                                    placeholder='A channel for reporting bugs'
-                                    className={errors?.channel_description ? 'ion-invalid' : ''}
-                                    aria-label="Channel Description (optional)"
-                                    autoGrow
-                                    rows={4}
-                                />
-                            </IonItem>
-                        </IonItemGroup>
-                        <IonItemGroup>
-                            <IonItemDivider className="py-1">
-                                <IonLabel>Channel Type</IonLabel>
-                            </IonItemDivider>
-                            <IonRadioGroup value={channelType} onIonChange={e => setChannelType(e.detail.value)}>
-                                <IonItem>
-                                    <div slot='start'>
-                                        <BiHash size='16' color='var(--ion-color-dark)' />
-                                    </div>
-                                    <IonRadio mode='md' className="h-8" labelPlacement="start" justify="space-between" value="Public">
-                                        Public
-                                    </IonRadio>
-                                </IonItem>
-                                <IonItem>
-                                    <div slot='start'>
-                                        <BiLockAlt size='16' color='var(--ion-color-dark)' />
-                                    </div>
-                                    <IonRadio mode='md' className="h-8" labelPlacement="start" justify="space-between" value="Private">
-                                        Private
-                                    </IonRadio>
-                                </IonItem>
-
-                                <IonItem>
-                                    <div slot='start'>
-                                        <BiGlobe size='16' color='var(--ion-color-dark)' />
-                                    </div>
-                                    <IonRadio mode='md' className="h-8" labelPlacement="start" justify="space-between" value="Open">
-                                        Open
-                                    </IonRadio>
-                                </IonItem>
-
-                                <IonItem lines='none' className="pt-2">
-                                    {channelType === 'Public' && <IonText className="text-sm" color='medium'>When a channel is set to public, anyone can join the channel and read messages, but only members can post messages.</IonText>}
-                                    {channelType === 'Private' && <IonText className="text-sm" color='medium'>When a channel is set to private, it can only be viewed or joined by invitation.</IonText>}
-                                    {channelType === 'Open' && <IonText className="text-sm" color='medium'>When a channel is set to open, everyone is a member.</IonText>}
-                                </IonItem>
-
-                            </IonRadioGroup>
-
-                        </IonItemGroup>
-
-                    </IonList>
-                </form>
+                        </ul>
+                    </form>
+                </Form>
             </IonContent>
         </IonModal>
     )

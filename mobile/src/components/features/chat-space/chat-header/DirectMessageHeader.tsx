@@ -1,4 +1,4 @@
-import { SquareAvatar, UserAvatar } from "@/components/common/UserAvatar"
+import { SquareAvatar } from "@/components/common/UserAvatar"
 import { useGetUser } from "@/hooks/useGetUser"
 import { UserContext } from "@/utils/auth/UserProvider"
 import { DMChannelListItem } from "@/utils/channel/ChannelListProvider"
@@ -18,11 +18,11 @@ export const DirectMessageHeaderUI = ({ name, image }: { name: string, image?: s
 
     return (<IonTitle>
         <div className='flex flex-col items-center justify-start'>
-            <div className='flex items-center justify-start'>
+            <div className='flex items-center justify-start gap-2'>
                 <SquareAvatar src={image ? `${image}` : undefined} alt={name} />
-                <h1 className='ml-2'>
+                <span className='text-sm text-wrap cal-sans font-medium'>
                     {name}
-                </h1>
+                </span>
             </div>
         </div>
     </IonTitle>)

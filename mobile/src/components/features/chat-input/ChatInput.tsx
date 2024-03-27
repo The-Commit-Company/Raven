@@ -1,7 +1,5 @@
 import { useFrappePostCall } from 'frappe-react-sdk'
-import { useCallback, useMemo, useRef, useState } from 'react'
-import { IonButton, IonButtons, IonIcon, IonItem, IonToolbar } from '@ionic/react';
-import { documentAttachOutline } from 'ionicons/icons';
+import { useCallback, useRef, useState } from 'react'
 import { FileUploadModal } from './FileUploadModal';
 import { Tiptap } from './Tiptap';
 import { AiOutlinePaperClip } from 'react-icons/ai';
@@ -58,14 +56,8 @@ export const ChatInput = ({ channelID, allChannels, allMembers }: Props) => {
 
     return (
         <div className='flex justify-between items-end content-start px-4 py-2 overflow-visible space-x-2'>
-            <IonButtons slot='end' className='mb-0.5'>
-                <input multiple type='file' hidden ref={fileInputRef} onChange={getFiles} />
-                <IonButton onClick={pickFiles} color='light' fill='solid' shape='round' slot='icon-only'>
-                    <AiOutlinePaperClip size='20px' className='text-zinc-300' />
-                </IonButton>
-            </IonButtons>
-            <div className='overflow-x-hidden w-[90%]'>
-                <Tiptap onMessageSend={onSubmit} messageSending={loading} />
+            <div className='overflow-x-hidden w-full'>
+                <Tiptap onMessageSend={onSubmit} messageSending={loading} onPickFiles={pickFiles} onGetFiles={getFiles} fileRef={fileInputRef}/>
             </div>
             <FileUploadModal channelID={channelID} files={files} setFiles={setFiles} pickFiles={pickFiles} onMessageSend={onMessageSend} />
         </div>

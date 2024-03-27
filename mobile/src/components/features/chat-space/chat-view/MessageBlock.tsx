@@ -74,9 +74,9 @@ export const NonContinuationMessageBlock = ({ message, user, onMessageSelect, is
             isHighlighted ? 'bg-yellow-300/20 dark:bg-yellow-300/20' : '')} {...longPressEvent}>
             <UserAvatarBlock message={message} user={user} />
             <div>
-                <div className='flex items-end'>
-                    <IonText className='font-black text-sm'>{user?.full_name ?? message.owner}</IonText>
-                    <IonText className='text-xs pl-1.5 text-zinc-500'>{DateObjectToTimeString(message.creation)}</IonText>
+                <div className='flex items-baseline'>
+                    <p className="text-foreground text-sm font-medium leading-normal tracking-normal">{user?.full_name ?? message.owner}</p>
+                    <p className='text-xs pl-1.5 text-foreground/50'>{DateObjectToTimeString(message.creation)}</p>
                 </div>
                 <MessageContent message={message} onReplyMessageClick={onReplyMessageClick} />
                 {message.is_edited === 1 && <IonText className='text-xs' color={'medium'}>(edited)</IonText>}
@@ -147,7 +147,7 @@ const MessageContent = ({ message, onReplyMessageClick }: { message: Message, on
                 <ReplyBlock message={JSON.parse(message.replied_message_details)} />
             </div>
         }
-        {message.message_type === 'Text' && <div className='text-zinc-100 text-md'><TextMessageBlock message={message} /></div>}
+        {message.message_type === 'Text' && <div className='text-foreground text-sm font-normal leading-normal tracking-normal'><TextMessageBlock message={message} /></div>}
         {message.message_type === 'Image' && <ImageMessageBlock message={message} />}
         {message.message_type === 'File' && <FileMessageBlock message={message} />}
     </div>
@@ -241,11 +241,11 @@ const ReplyBlock = ({ message }: { message: Message }) => {
     const date = message ? new Date(message?.creation) : null
     return <div className='px-2 py-1.5 my-2 rounded-e-sm bg-neutral-900 border-l-4 border-l-neutral-500'>
         {message && <div>
-            <div className='flex items-end pb-1'>
-                <IonText className='font-bold text-sm'>{user?.full_name ?? message.owner}</IonText>
-                {date && <IonText className='font-normal text-xs pl-2' color='medium'>on {DateObjectToFormattedDateStringWithoutYear(date)} at {DateObjectToTimeString(date)}</IonText>}
+            <div className='flex items-baseline pb-1'>
+                <p className='text-foreground font-medium text-sm leading-normal tracking-normal'>{user?.full_name ?? message.owner}</p>
+                {date && <p className='text-xs text-foreground/60 font-normal pl-1.5'>on {DateObjectToFormattedDateStringWithoutYear(date)} at {DateObjectToTimeString(date)}</p>}
             </div>
-            {message.message_type === 'Text' && <div className='text-sm text-neutral-400 line-clamp-3'>{parse(message.content ?? '')}</div>}
+            {message.message_type === 'Text' && <div className='text-sm text-foreground/60 line-clamp-3'>{parse(message.content ?? '')}</div>}
             {message.message_type === 'Image' && <div className='flex items-center space-x-2'>
                 <img src={message.file} alt={`Image`} className='inline-block w-10 h-10 rounded-md' />
                 <p className='text-sm font-semibold'>📸 &nbsp;Image</p>

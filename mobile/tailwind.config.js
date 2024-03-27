@@ -80,6 +80,9 @@ module.exports = {
       },
       fontFamily: {
         'sans': ['Inter', 'sans-serif'],
+      },
+      fontSize:{
+        'xxs':'10px'
       }
     },
   },

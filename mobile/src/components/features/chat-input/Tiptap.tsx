@@ -22,7 +22,8 @@ import html from 'highlight.js/lib/languages/xml'
 import json from 'highlight.js/lib/languages/json'
 import python from 'highlight.js/lib/languages/python'
 import { BiSend } from 'react-icons/bi'
-import { IonButton, IonButtons } from '@ionic/react'
+import { AiOutlinePaperClip } from 'react-icons/ai';
+import { IconButton } from '@/components/ui/icon-button'
 
 const lowlight = createLowlight(common)
 
@@ -36,7 +37,10 @@ lowlight.register('python', python)
 type TiptapEditorProps = {
     onMessageSend: (message: string, json: any) => Promise<void>,
     messageSending: boolean,
-    defaultText?: string
+    defaultText?: string,
+    onPickFiles?: () => void,
+    onGetFiles?: (e: React.ChangeEvent<HTMLInputElement>) => void,
+    fileRef?: React.RefObject<HTMLInputElement>
 }
 
 const UserMention = Mention.extend({
@@ -58,7 +62,7 @@ const ChannelMention = Mention.extend({
             pluginKey: new PluginKey('channelMention'),
         }
     })
-export const Tiptap = ({ onMessageSend, messageSending, defaultText = '' }: TiptapEditorProps) => {
+export const Tiptap = ({ onMessageSend, messageSending, defaultText = '', onPickFiles, onGetFiles, fileRef }: TiptapEditorProps) => {
 
     const { enabledUsers } = useContext(UserListContext)
 
@@ -271,7 +275,7 @@ export const Tiptap = ({ onMessageSend, messageSending, defaultText = '' }: Tipt
         content: defaultText,
         editorProps: {
             attributes: {
-                class: 'focus:outline-none text-md py-1.5 px-2'
+                class: 'focus:outline-none text-base py-1.5 px-2'
             }
         }
     })
@@ -291,21 +295,28 @@ export const Tiptap = ({ onMessageSend, messageSending, defaultText = '' }: Tipt
 
     return (
         <div className='flex justify-between items-end content-start overflow-visible space-x-2 w-full'>
-            <div className='w-full focus:outline-none rounded-md border border-zinc-800 text-md overflow-hidden'>
-                <EditorContent editor={editor} />
+            <div className='w-full flex items-end rounded-md border border-foreground/10 text-md overflow-hidden py-1'>
+                <div className='flex-grow focus:outline-none'>
+                    <EditorContent editor={editor} />
+                </div>
+                <div className="flex items-center px-1">
+                    <input multiple type='file' hidden ref={fileRef} onChange={onGetFiles} />
+                    <IconButton size="md" icon={AiOutlinePaperClip} onClick={onPickFiles} variant="ghost" className='text-foreground/80 active:bg-accent'/>
+                </div>
             </div>
-            <div className='mb-1'>
-                <button
-                    className='p-1.5 text-white rounded-full bg-[var(--ion-color-primary)] hover:bg-[var(--ion-color-primary-shade)] focus:outline-none disabled:opacity-30 disabled:cursor-not-allowed'
+            <div className='flex items-center py-1'>
+                <IconButton
+                    className='disabled:opacity-30 disabled:cursor-not-allowed'
                     aria-disabled={messageSending || isEditorEmpty}
                     disabled={messageSending || isEditorEmpty}
-                    onClick={onSubmit}>
-                    <BiSend fontSize='18px' />
-                </button>
+                    onClick={onSubmit}
+                    icon={BiSend}
+                    size="md"
+                    variant="default"
+                >
+                </IconButton>
             </div>
-
         </div>
-
 
     )
 }

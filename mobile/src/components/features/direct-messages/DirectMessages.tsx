@@ -1,11 +1,13 @@
-import { IonBadge, IonItem, IonLabel, IonList, useIonToast } from '@ionic/react';
+import { IonList, useIonToast } from '@ionic/react';
 import { useFrappePostCall } from 'frappe-react-sdk'
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { DMUser } from '@/pages/direct-messages/DirectMessageList';
 import { DMChannelListItem, UnreadCountData, useChannelList } from '@/utils/channel/ChannelListProvider';
-import { SquareAvatar, UserAvatar } from '@/components/common/UserAvatar';
+import { SquareAvatar } from '@/components/common/UserAvatar';
 import { useIsUserActive } from '@/hooks/useIsUserActive';
 import { useMemo } from 'react';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
 
 export const PrivateMessages = ({ users, unread_count }: { users: DMUser[], unread_count?: UnreadCountData }) => {
 
@@ -54,19 +56,27 @@ const DMChannelItem = ({ user, unreadCount }: { user: DMChannel, unreadCount: Un
     const unreadCountForChannel = useMemo(() => unreadCount.find((unread) => unread.name == user.channel.name)?.unread_count, [user.channel.name, unreadCount])
     const isActive = useIsUserActive(user.name)
 
-    return <IonItem className='py-1' key={user.name} detail={false} lines='none' routerLink={`channel/${user.channel.name}`}>
-        <div slot='start' className='flex items-center space-x-4 w-5/6'>
-            <SquareAvatar slot='start' alt={user.full_name} src={user.user_image} isActive={isActive} />
-            <IonLabel className='w-5/6'>{user.full_name}</IonLabel>
-        </div>
-        {unreadCountForChannel ? <IonBadge>{unreadCountForChannel < 100 ? unreadCountForChannel : '99'}</IonBadge> : null}
-    </IonItem>
+    return <Link to={`channel/${user.channel.name}`}>
+        <li className='list-none px-4 py-2 active:bg-accent active:rounded' key={user.name}>
+            <div className='flex justify-between items-center'>
+                <div className='flex items-center space-x-2 w-5/6'>
+                    <SquareAvatar alt={user.full_name} src={user.user_image} isActive={isActive} />
+                    <Label className='text-foreground w-5/6 cursor-pointer'>{user.full_name}</Label>
+                </div>
+                {unreadCountForChannel ? <Badge>{unreadCountForChannel < 100 ? unreadCountForChannel : '99'}</Badge> : null}
+            </div>
+        </li>
+    </Link>
 }
 
 const UserItem = ({ user, onChannelCreate }: { user: DMUser, onChannelCreate: (user_id: string) => void }) => {
     const isActive = useIsUserActive(user.name)
-    return <IonItem className='py-1' key={user.name} detail={false} lines='none' button onClick={() => onChannelCreate(user.name)}>
-        <SquareAvatar slot='start' alt={user.full_name} src={user.user_image} isActive={isActive} />
-        <IonLabel>{user.full_name}</IonLabel>
-    </IonItem>
+    return <li className="px-4 py-2 flex active:bg-accent active:rounded" key={user.name} >
+        <button onClick={() => onChannelCreate(user.name)} className='flex justify-between items-center w-full'>
+            <div className="flex items-center space-x-2 w-full">
+                <SquareAvatar alt={user.full_name} src={user.user_image} isActive={isActive} />
+                <Label className="text-foreground cursor-pointer">{user.full_name}</Label>
+            </div>
+        </button>
+    </li>
 }
