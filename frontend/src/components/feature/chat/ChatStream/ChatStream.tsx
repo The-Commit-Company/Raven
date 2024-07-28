@@ -53,6 +53,7 @@ import { ForwardMessageDialog, useForwardMessage } from '../ChatMessage/MessageA
  * 6. Send in an email
  * 7. Link with document
  * 8. Bookmark
+ * 9. Pin - This will pin the message and add it to the pinned messages
  *
  * Every message will have a hover menu with the following options:
  * 1. Reaction emojis with the frequently used emojis for that user on this channel

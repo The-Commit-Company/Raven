@@ -13,6 +13,7 @@ class RavenChannel(Document):
 	from typing import TYPE_CHECKING
 
 	if TYPE_CHECKING:
+		from frappe.model.document import Document
 		from frappe.types import DF
 
 		channel_description: DF.Data | None
@@ -25,6 +26,7 @@ class RavenChannel(Document):
 		last_message_timestamp: DF.Datetime | None
 		linked_doctype: DF.Link | None
 		linked_document: DF.DynamicLink | None
+		pinned_messages: DF.Table[Document]
 		type: DF.Literal["Private", "Public", "Open"]
 	# end: auto-generated types
 

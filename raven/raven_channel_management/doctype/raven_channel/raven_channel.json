@@ -23,7 +23,8 @@
   "section_break_wlnt",
   "last_message_timestamp",
   "column_break_eckt",
-  "last_message_details"
+  "last_message_details",
+  "pinned_messages"
  ],
  "fields": [
   {
@@ -134,6 +135,12 @@
    "fieldtype": "Check",
    "label": "Is Synced",
    "read_only": 1
+  },
+  {
+   "fieldname": "pinned_messages",
+   "fieldtype": "Table",
+   "label": "Pinned Messages",
+   "options": "Pinned Messages"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -147,7 +154,7 @@
    "link_fieldname": "channel_id"
   }
  ],
- "modified": "2024-06-20 18:26:25.559899",
+ "modified": "2024-07-28 09:25:15.918847",
  "modified_by": "Administrator",
  "module": "Raven Channel Management",
  "name": "Raven Channel",

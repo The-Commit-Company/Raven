@@ -1,5 +1,5 @@
 import { useBoolean } from '@/hooks/useBoolean'
-import { DropdownMenu, Flex, IconButton } from '@radix-ui/themes'
+import { Box, DropdownMenu, Flex, IconButton, Section } from '@radix-ui/themes'
 import { BiDotsVerticalRounded, BiFile, BiSearch, BiUserPlus } from 'react-icons/bi'
 import { ViewFilesButton } from '../files/ViewFilesButton'
 import AddChannelMembersModal from '../channel-member-details/add-members/AddChannelMembersModal'
@@ -41,7 +41,8 @@ const ChannelHeaderMenu = ({ channelData }: Props) => {
     }, [channelData, channelMembers, currentUser])
 
     return (
-        <><DropdownMenu.Root>
+        <>
+        <DropdownMenu.Root>
             <DropdownMenu.Trigger>
                 <IconButton color='gray' className='bg-transparent text-gray-12 hover:bg-gray-3'>
                     <BiDotsVerticalRounded />

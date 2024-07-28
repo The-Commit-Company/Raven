@@ -7,7 +7,7 @@ import { FrappeConfig, FrappeContext } from 'frappe-react-sdk'
 import { EmojiPickerButton } from './EmojiPickerButton'
 import { UserContext } from '@/utils/auth/UserProvider'
 import { AiOutlineEdit } from 'react-icons/ai'
-import { LuForward, LuReply } from 'react-icons/lu'
+import { LuForward, LuReply, LuPin } from 'react-icons/lu'
 
 const QUICK_EMOJIS = ['👍', '✅', '👀', '🎉']
 

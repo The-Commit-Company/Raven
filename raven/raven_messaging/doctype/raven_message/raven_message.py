@@ -22,7 +22,6 @@ class RavenMessage(Document):
 
 	if TYPE_CHECKING:
 		from frappe.types import DF
-
 		from raven.raven_messaging.doctype.raven_mention.raven_mention import RavenMention
 
 		bot: DF.Link | None

@@ -118,6 +118,26 @@ def save_message(message_id, add=False):
 
 	return "message saved"
 
+@frappe.whitelist()
+def pin_message(channel_id, is_pinned=False):
+	"""
+	Pin the message as a bookmark
+	"""
+	# from frappe.desk.like import toggle_like
+	# toggle_like("Pinned Messages", channel_id, add)
+
+	pinned_messages = frappe.db.get_value("Raven Channel", channel_id, "pinned_messages")
+	print("Pinned Messages:", pinned_messages, is_pinned)
+
+	frappe.publish_realtime(
+		"message_pinned",
+		{
+			"channel_id": channel_id,
+		},
+		user=frappe.session.user,
+	)
+
+	return "message pinned"
 
 @frappe.whitelist()
 def get_saved_messages():
@@ -141,8 +161,7 @@ def get_saved_messages():
 			raven_message.owner,
 			raven_message.creation,
 			raven_message.text,
-			raven_message.channel_id,
-			raven_message.file,
+			raven_message.channel_id, raven_message.file,
 			raven_message.message_type,
 			raven_message.message_reactions,
 			raven_message._liked_by,
@@ -160,6 +179,25 @@ def get_saved_messages():
 
 	return messages
 
+@frappe.whitelist()
+def get_pinned_messages():
+	"""
+	Fetches list of all messages pinned by the user
+	Check if the user has permission to view the message
+	"""
+
+	# raven_message = frappe.qb.DocType("Raven Message")
+	# pinned_messages = frappe.qb.DocType("Pinned Messages")
+
+	# query = {
+	# 	frappe.qb.from_(pinned_messages)
+	# 	.orderby(raven_message.creation, order=Order.asc)
+	# 	.distinct()
+	# }
+
+	# messages = query.run(as_dict=True)
+
+	return None
 
 def parse_messages(messages):
 

@@ -31,12 +31,13 @@ interface MessageBlockProps {
     setDeleteMessage: (message: Message) => void,
     setEditMessage: (message: Message) => void,
     replyToMessage: (message: Message) => void,
+    pinMessage: (message: Message) => void,
     forwardMessage: (message: Message) => void,
     onReplyMessageClick: (messageID: string) => void,
     isHighlighted?: boolean
 }
 
-export const MessageItem = ({ message, setDeleteMessage, isHighlighted, onReplyMessageClick, setEditMessage, replyToMessage, forwardMessage }: MessageBlockProps) => {
+export const MessageItem = ({ message, setDeleteMessage, isHighlighted, onReplyMessageClick, setEditMessage, replyToMessage, pinMessage, forwardMessage }: MessageBlockProps) => {
 
     const { name, owner: userID, is_bot_message, bot, creation: timestamp, message_reactions, is_continuation, linked_message, replied_message_details } = message
 
@@ -52,6 +53,10 @@ export const MessageItem = ({ message, setDeleteMessage, isHighlighted, onReplyM
 
     const onReply = () => {
         replyToMessage(message)
+    }
+
+    const onPin = () => {
+        pinMessage(message);
     }
 
     const onForward = () => {

@@ -1,3 +1,4 @@
+import { PinnedMessages } from "@/types/RavenChannelManagement/PinnedMessages"
 
 export interface RavenChannel {
 	creation: string
@@ -26,4 +27,5 @@ export interface RavenChannel {
 	last_message_timestamp?: string
 	/**	Last Message Details : JSON	*/
 	last_message_details?: any
+	pinned_messages?: PinnedMessages[]
 }

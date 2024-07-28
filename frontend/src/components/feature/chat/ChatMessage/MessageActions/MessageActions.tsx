@@ -9,7 +9,9 @@ import { RetractVote } from './RetractVote'
 import { toast } from 'sonner'
 import { getErrorMessage } from '@/components/layout/AlertBanner/ErrorBanner'
 import { AiOutlineEdit } from 'react-icons/ai'
-import { LuForward, LuReply } from 'react-icons/lu'
+import { LuForward, LuReply, LuPin, LuPinOff } from 'react-icons/lu'
+import { RavenChannel } from '../../../../../../../types/RavenChannelManagement/RavenChannel'
+import { PinnedMessages } from '@/types/RavenChannelManagement/PinnedMessages'
 
 export interface MessageContextMenuProps {
     message?: Message | null,
@@ -38,6 +40,7 @@ export const MessageContextMenu = ({ message, onDelete, onEdit, onReply, onForwa
                         Reply
                     </Flex>
                 </ContextMenu.Item>
+                <PinMessageAction message={message}/>
                 <ContextMenu.Item onClick={onForward}>
                     <Flex gap='2'>
                         <LuForward size='18' />
@@ -161,4 +164,34 @@ const SaveMessageAction = ({ message }: { message: Message }) => {
     </ContextMenu.Item>
 
 
+}
+
+const PinMessageAction = ({ message }: { message: Message }) => {
+
+    const { call } = useContext(FrappeContext) as FrappeConfig
+    // Havent figured out how to get this
+    const isPinned = true;
+
+    const handleLike = () => {
+        call.post('raven.api.raven_message.pin_message', {
+            // doctype: 'Pin message',
+            channel_id: message.channel_id,
+            is_pinned: isPinned ? 'No' : 'Yes'
+        }).then(() => {
+            if(isPinned) toast('Message Unpinned');
+            else toast.success("Message Pinned")
+        })
+            .catch((e) => { toast.error('Could not perform the action', {
+                    description: getErrorMessage(e)
+                })
+            })
+    }
+
+    return <ContextMenu.Item onClick={handleLike}>
+        <Flex gap='2'>
+            {!isPinned && <LuPin size='18' />}
+            {isPinned && <LuPinOff size='18' />}
+            {!isPinned ? "Pin" : "Unpin"} message
+        </Flex>
+    </ContextMenu.Item>
 }
