@@ -12,6 +12,11 @@ import { memo } from "react"
 import { toast } from "sonner"
 import { useIsDesktop } from "@/hooks/useMediaQuery"
 
+import path from 'path';
+import { fromPath } from 'pdf2pic';
+import fs from 'fs';
+
+import test from '../../../../../../../../../../../../Downloads/test.png'
 interface FileMessageBlockProps extends BoxProps {
     message: FileMessage,
     user?: UserFields,
@@ -40,7 +45,7 @@ export const FileMessageBlock = memo(({ message, user, ...props }: FileMessageBl
 
     const isDesktop = useIsDesktop()
 
-    return <Box {...props}>
+    return <Box {...props}> 
 
         {isVideo ? <Flex gap='2' direction='column'>
             <Link
@@ -54,40 +59,46 @@ export const FileMessageBlock = memo(({ message, user, ...props }: FileMessageBl
 
             </video>
         </Flex> :
-
-
+            
             <Flex
-                align='center'
+                direction="column"
                 gap='4'
                 p='4'
+                height="220px"
+                maxWidth={isDesktop ? '320px' : '100%'}
                 className="border-2 bg-gray-2 dark:bg-gray-4 rounded-md border-gray-4  dark:border-gray-6 shadow-sm">
-                <Flex align='center' gap='2'>
-                    <FileExtensionIcon ext={fileExtension} />
-                    <Text as='span' size='2' className="text-ellipsis overflow-hidden line-clamp-1">{fileName}</Text>
-                </Flex>
+            
+                            
+                <img src={test} width="100%" height="80%"/>
 
-                <Flex align='center' gap='2'>
-                    {isPDF && isDesktop && <PDFPreviewButton message={message} user={user} />}
-                    <IconButton
-                        size='1'
-                        title="Copy link"
-                        color='gray'
-                        onClick={copyLink}
-                        variant="soft"
-                    >
-                        <BiLink />
-                    </IconButton>
-                    <IconButton
-                        size='1'
-                        asChild
-                        title="Download"
-                        color='gray'
-                        variant="soft"
-                    >
-                        <Link className='no-underline' href={message.file} download>
-                            {isDesktop ? <BiDownload /> : <BiShow />}
-                        </Link>
-                    </IconButton>
+                <Flex align='start' gap='4'>
+                    
+                    <FileExtensionIcon ext={fileExtension} />
+                    <Text as='span' size='2'  className=" text-ellipsis overflow-hidden line-clamp-1" >{fileName}</Text>
+                    
+                    <Flex align='end' gap='3'>
+                        {isPDF && isDesktop && <PDFPreviewButton message={message} user={user} />}
+                        <IconButton
+                            size='1'
+                            title="Copy link"
+                            color='gray'
+                            onClick={copyLink}
+                            variant="soft"
+                        >
+                            <BiLink />
+                        </IconButton>
+                        <IconButton
+                            size='1'
+                            asChild
+                            title="Download"
+                            color='gray'
+                            variant="soft"
+                        >
+                            <Link className='no-underline' href={message.file} download>
+                                {isDesktop ? <BiDownload /> : <BiShow />}
+                            </Link>
+                        </IconButton>
+                    </Flex>
                 </Flex>
             </Flex>
         }
@@ -103,6 +114,14 @@ const PDFPreviewButton = ({ message, user }: {
 }) => {
 
     const fileName = getFileName(message.file)
+
+    const image = convertPdfToImage(message, user)
+    .then(() => {
+        console.log('PDF conversion successful');
+    })
+    .catch((error) => {
+        console.error('PDF conversion failed', error);
+    });
 
     return <Box>
         <Dialog.Root>
@@ -142,3 +161,40 @@ const PDFPreviewButton = ({ message, user }: {
         </Dialog.Root>
     </Box>
 }
+
+
+
+async function convertPdfToImage(message: FileMessage, user?: UserFields){
+    const options = {
+      density: 100,
+      saveFilename: user ? user.full_name || "default_filename" : "default_filename", // Optionally use user data for the filename
+      savePath: path.join(process.cwd(), 'public/images'), // Adjust the save path as needed
+      format: "png",
+      width: 600,
+      height: 600
+    };
+  
+    const filePath = message.file; // Get the PDF file path from message
+    const pageToConvertAsImage = 1;
+  
+    // Create the save directory if it doesn't exist
+    if (!fs.existsSync(options.savePath)) {
+      fs.mkdirSync(options.savePath, { recursive: true });
+    }
+  
+    // Initialize the converter
+    const convert = fromPath(filePath, options);
+  
+    try {
+      // Perform the conversion
+      const res = await convert(pageToConvertAsImage, { responseType: "image" })
+      .then((res) => {;
+        console.log("Page 1 is now converted as image");
+        return res;
+      });
+    }
+    catch (error) {
+      console.error("Error converting PDF to image:", error);
+      throw error;
+    }
+  }
