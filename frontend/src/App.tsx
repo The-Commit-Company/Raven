@@ -44,6 +44,7 @@ const router = createBrowserRouter(
             </Route>
           </Route> */}
         </Route>
+        <Route path="*" lazy={() => import('@/pages/404ErrorPage')} />
       </Route>
     </>
   ), {
