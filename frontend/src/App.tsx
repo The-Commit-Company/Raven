@@ -7,10 +7,9 @@ import { ChannelRedirect } from './utils/channel/ChannelRedirect'
 import "cal-sans";
 import { ThemeProvider } from './ThemeProvider'
 import { Toaster } from 'sonner'
-import { useStickyState } from './hooks/useStickyState'
 import MobileTabsPage from './pages/MobileTabsPage'
 import { UserProfile } from './components/feature/userSettings/UserProfile/UserProfile'
-
+import { Appearance } from './components/feature/userSettings/Appearance/Appearance'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -27,6 +26,7 @@ const router = createBrowserRouter(
             <Route path="settings" lazy={() => import('./pages/settings/Settings')}>
               <Route index element={<UserProfile />} />
               <Route path="profile" element={<UserProfile />} />
+              <Route path="appearance" element={<Appearance />} />
               <Route path="users" lazy={() => import('./components/feature/userSettings/Users/AddUsers')} />
               <Route path="frappe-hr" lazy={() => import('./pages/settings/Integrations/FrappeHR')} />
               {/* <Route path="bots" lazy={() => import('./components/feature/userSettings/Bots')} /> */}
@@ -52,14 +52,7 @@ const router = createBrowserRouter(
 )
 function App() {
 
-  const [appearance, setAppearance] = useStickyState<'light' | 'dark'>('dark', 'appearance');
-
-  const toggleTheme = () => {
-    setAppearance(appearance === 'dark' ? 'light' : 'dark');
-  };
-
   // We need to pass sitename only if the Frappe version is v15 or above.
-
   const getSiteName = () => {
     // @ts-ignore
     if (window.frappe?.boot?.versions?.frappe && (window.frappe.boot.versions.frappe.startsWith('15') || window.frappe.boot.versions.frappe.startsWith('16'))) {
@@ -82,14 +75,12 @@ function App() {
     >
       <UserProvider>
         <Toaster richColors />
-        <ThemeProvider
-          appearance={appearance}
-          // grayColor='slate'
-          accentColor='iris'
-          panelBackground='translucent'
-          toggleTheme={toggleTheme}>
-          <RouterProvider router={router} />
-        </ThemeProvider>
+          <ThemeProvider
+            // grayColor='slate'
+            accentColor='iris'
+            panelBackground='translucent'>
+            <RouterProvider router={router} />
+          </ThemeProvider>
       </UserProvider>
     </FrappeProvider>
   )
