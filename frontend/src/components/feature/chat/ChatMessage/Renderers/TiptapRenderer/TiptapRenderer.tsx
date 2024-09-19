@@ -27,6 +27,8 @@ import Table from '@tiptap/extension-table'
 import TableCell from '@tiptap/extension-table-cell'
 import TableHeader from '@tiptap/extension-table-header'
 import TableRow from '@tiptap/extension-table-row'
+import TaskItem from '@tiptap/extension-task-item'
+import TaskList from '@tiptap/extension-task-list'
 
 const lowlight = createLowlight(common)
 
@@ -86,6 +88,14 @@ export const TiptapRenderer = ({ message, user, isScrolling = false, showMiniIma
             class: 'pt-0.5 px-1 pb-px bg-[var(--gray-a3)] dark:bg-[#0d0d0d] text-[var(--ruby-a11)] dark-[var(--accent-a3)] text text-xs font-mono rounded border border-gray-4 dark:border-gray-6'
           }
         }
+      }),
+      TaskList,
+      TaskItem.configure({
+        nested: true,
+        onReadOnlyChecked: (node, checked) => {
+          // TODO: Update the message when task item is checked/unchecked
+          return true
+        },
       }),
       Highlight.configure({
         multicolor: true,

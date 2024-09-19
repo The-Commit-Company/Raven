@@ -24,6 +24,8 @@
     "@tiptap/extension-table-row": "2.5.9",
     "@tiptap/extension-typography": "2.5.9",
     "@tiptap/extension-underline": "2.5.9",
+    "@tiptap/extension-task-item": "2.5.9",
+    "@tiptap/extension-task-list": "2.5.9",
     "@tiptap/pm": "2.5.9",
     "@tiptap/react": "2.5.9",
     "@tiptap/starter-kit": "2.5.9",

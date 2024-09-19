@@ -150,3 +150,42 @@
 .tiptap pre .hljs-strong {
     font-weight: 700;
 }
+
+/* Task list styles */
+.tiptap ul[data-type="taskList"] {
+    list-style: none;
+    margin-left: 0;
+    padding: 0;
+}
+
+.tiptap ul[data-type="taskList"] li {
+    align-items: flex-start;
+    display: flex;
+}
+
+.tiptap ul[data-type="taskList"] li>label {
+    flex: 0 0 auto;
+    align-items: center;
+    margin-right: 0.5rem;
+    user-select: none;
+}
+
+.tiptap-editor ul[data-type="taskList"] li>label {
+    margin-top: -0.5px;
+}
+
+.tiptap ul[data-type="taskList"] li>div {
+    flex: 1 1 auto;
+}
+
+
+.tiptap ul[data-type="taskList"] input[type="checkbox"] {
+    cursor: pointer;
+    margin: 0;
+    width: 14px;
+    height: 14px;
+}
+
+.tiptap ul[data-type="taskList"] ul[data-type="taskList"] {
+    margin: 0;
+}

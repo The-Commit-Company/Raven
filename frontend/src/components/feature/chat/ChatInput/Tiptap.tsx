@@ -6,6 +6,8 @@ import { TextFormattingMenu } from './TextFormattingMenu'
 import Highlight from '@tiptap/extension-highlight'
 import Link from '@tiptap/extension-link'
 import Placeholder from '@tiptap/extension-placeholder'
+import TaskItem from '@tiptap/extension-task-item'
+import TaskList from '@tiptap/extension-task-list'
 import './tiptap.styles.css'
 import Mention from '@tiptap/extension-mention'
 import { UserListContext } from '@/utils/users/UserListProvider'
@@ -108,10 +110,11 @@ const Tiptap = ({ isEdit, slotBefore, fileProps, onMessageSend, channelMembers, 
 
                     const isCodeBlockActive = this.editor.isActive('codeBlock');
                     const isListItemActive = this.editor.isActive('listItem');
+                    const isTaskListActive = this.editor.isActive('taskList');
 
                     const hasContent = this.editor.getText().trim().length > 0
 
-                    if (isCodeBlockActive || isListItemActive) {
+                    if (isCodeBlockActive || isListItemActive || isTaskListActive) {
                         return false;
                     }
                     let html = ''
@@ -273,6 +276,10 @@ const Tiptap = ({ isEdit, slotBefore, fileProps, onMessageSend, channelMembers, 
                     class: 'pt-0.5 px-1 pb-px bg-[var(--gray-a3)] dark:bg-[#0d0d0d] text-[var(--ruby-a11)] dark-[var(--accent-a3)] text text-xs font-mono rounded border border-gray-4 dark:border-gray-6'
                 }
             },
+        }),
+        TaskList,
+        TaskItem.configure({
+            nested: true,
         }),
         Underline,
         Highlight.configure({

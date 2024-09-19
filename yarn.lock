@@ -2693,6 +2693,16 @@
   resolved "https://registry.yarnpkg.com/@tiptap/extension-table/-/extension-table-2.5.9.tgz#a7b80a668a683c3abe59725812091123b2c12b88"
   integrity sha512-kLZdYBO0Ug4sNjzyDfa3W29qL4HdRK/IaMxcmcEbyKSt42qiMJlIelbGzVENzxe9AbcNTeiWje70Nhk4dbb8Ag==
 
+"@tiptap/extension-task-item@2.5.9":
+  version "2.5.9"
+  resolved "https://registry.yarnpkg.com/@tiptap/extension-task-item/-/extension-task-item-2.5.9.tgz#623590d549aa0e21ccd1d34396ebbeeea45886f5"
+  integrity sha512-g4HK3r3yNE0RcXQOkJHs94Ws/fhhTqa1L5iAy4gwYKNNFFnIQl8BpE6nn9d5h33kWDN9jjY+PZmq+0PvxCLODQ==
+
+"@tiptap/extension-task-list@2.5.9":
+  version "2.5.9"
+  resolved "https://registry.yarnpkg.com/@tiptap/extension-task-list/-/extension-task-list-2.5.9.tgz#9934b3ae84dbfc27804d0d54e64aeb9e8fcaf418"
+  integrity sha512-OylVo5cAh0117PzhyM8MGaUIrCskGiF7v7x6/zAHMFIqVdcbKsq+hMueVPnABfOyLcIH5Zojo3NzNOJeKeblCg==
+
 "@tiptap/extension-text@^2.5.9":
   version "2.6.5"
   resolved "https://registry.yarnpkg.com/@tiptap/extension-text/-/extension-text-2.6.5.tgz#4f48fdbc6d72d4400c9d0fa7577a9ff06db431ac"
