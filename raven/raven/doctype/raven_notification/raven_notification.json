@@ -1,0 +1,219 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "RN-.#####",
+ "creation": "2024-07-27 11:17:12.252851",
+ "default_view": "List",
+ "doctype": "DocType",
+ "document_type": "System",
+ "engine": "InnoDB",
+ "field_order": [
+  "enabled",
+  "column_break_2",
+  "channel",
+  "raven_channel",
+  "dm",
+  "filters",
+  "subject",
+  "document_type",
+  "col_break_1",
+  "event",
+  "method",
+  "date_changed",
+  "days_in_advance",
+  "value_changed",
+  "section_break_9",
+  "condition",
+  "column_break_6",
+  "html_7",
+  "message_sb",
+  "get_fields",
+  "message",
+  "json",
+  "link",
+  "pdf_link"
+ ],
+ "fields": [
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "channel",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "\nChannel\nDM",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "depends_on": "eval:doc.channel=='Channel'",
+   "fieldname": "raven_channel",
+   "fieldtype": "Table MultiSelect",
+   "label": "Raven Channel",
+   "options": "Raven Channel List"
+  },
+  {
+   "depends_on": "eval:doc.channel==\"DM\";",
+   "fieldname": "dm",
+   "fieldtype": "Table MultiSelect",
+   "label": "DM",
+   "options": "Raven DM List"
+  },
+  {
+   "fieldname": "filters",
+   "fieldtype": "Section Break",
+   "label": "Filters"
+  },
+  {
+   "description": "To add dynamic subject, use jinja tags like\n\n<div><pre><code>{{ doc.name }} Delivered</code></pre></div>",
+   "fieldname": "subject",
+   "fieldtype": "Data",
+   "ignore_xss_filter": 1,
+   "in_list_view": 1,
+   "label": "Subject"
+  },
+  {
+   "fieldname": "document_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Document Type",
+   "options": "DocType",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "col_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "event",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Send Alert On",
+   "options": "\nNew\nSave\nSubmit\nCancel\nDays After\nDays Before\nValue Change\nCustom\nMethod",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "depends_on": "eval:doc.event=='Method'",
+   "description": "Trigger on valid methods like \"before_insert\", \"after_update\", etc (will depend on the DocType selected)",
+   "fieldname": "method",
+   "fieldtype": "Data",
+   "label": "Trigger Method"
+  },
+  {
+   "depends_on": "eval:doc.document_type && (doc.event==\"Days After\" || doc.event==\"Days Before\")",
+   "description": "Send alert if date matches this field's value",
+   "fieldname": "date_changed",
+   "fieldtype": "Select",
+   "label": "Reference Date"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.document_type && (doc.event==\"Days After\" || doc.event==\"Days Before\")",
+   "description": "Send days before or after the reference date",
+   "fieldname": "days_in_advance",
+   "fieldtype": "Int",
+   "label": "Days Before or After"
+  },
+  {
+   "depends_on": "eval:doc.document_type && doc.event==\"Value Change\"",
+   "description": "Send alert if this field's value changes",
+   "fieldname": "value_changed",
+   "fieldtype": "Select",
+   "label": "Value Changed"
+  },
+  {
+   "fieldname": "section_break_9",
+   "fieldtype": "Section Break"
+  },
+  {
+   "description": "Optional: The alert will be sent if this expression is true",
+   "fieldname": "condition",
+   "fieldtype": "Code",
+   "ignore_xss_filter": 1,
+   "in_list_view": 1,
+   "label": "Condition"
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "html_7",
+   "fieldtype": "HTML",
+   "options": "<p><strong>Condition Examples:</strong></p>\n<pre>doc.status==\"Open\"<br>doc.due_date==nowdate()<br>doc.total &gt; 40000\n</pre>\n"
+  },
+  {
+   "fieldname": "message_sb",
+   "fieldtype": "Section Break",
+   "label": "Message"
+  },
+  {
+   "fieldname": "get_fields",
+   "fieldtype": "Button",
+   "label": "Get Fields"
+  },
+  {
+   "default": "Add your message here",
+   "fieldname": "message",
+   "fieldtype": "Code",
+   "ignore_xss_filter": 1,
+   "label": "Message",
+   "options": "Jinja"
+  },
+  {
+   "fieldname": "json",
+   "fieldtype": "JSON",
+   "hidden": 1,
+   "label": "json"
+  },
+  {
+   "fieldname": "link",
+   "fieldtype": "Data",
+   "label": "link",
+   "read_only": 1
+  },
+  {
+   "fieldname": "pdf_link",
+   "fieldtype": "Data",
+   "label": "Pdf Link",
+   "read_only": 1
+  }
+ ],
+ "icon": "fa fa-envelope",
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-09-18 05:49:58.364973",
+ "modified_by": "Administrator",
+ "module": "Raven",
+ "name": "Raven Notification",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "subject",
+ "track_changes": 1,
+ "track_views": 1
+}

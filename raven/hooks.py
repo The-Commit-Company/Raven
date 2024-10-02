@@ -129,6 +129,69 @@ after_uninstall = "raven.uninstall.after_uninstall"
 # Hook on document methods and events
 
 doc_events = {
+	"*": {
+        "validate":[
+			"raven.raven.doctype.raven_notification.raven_notification.send_a_raven",
+            "raven.raven.doctype.raven_notification.raven_notification.trigger_on_save_for_value_change"
+			
+			],
+        "on_cancel":[
+			"raven.raven.doctype.raven_notification.raven_notification.send_a_raven",
+			
+			],
+        "on_submit":[
+			"raven.raven.doctype.raven_notification.raven_notification.send_a_raven",
+			
+			],
+        "after_insert":[
+			"raven.raven.doctype.raven_notification.raven_notification.send_a_raven",
+			
+			],
+        "before_insert":[
+            "raven.raven.doctype.raven_notification.raven_notification.send_a_raven_for_method_event",
+		],
+        "before_validate":[
+            "raven.raven.doctype.raven_notification.raven_notification.send_a_raven_for_method_event",
+		],
+        "after_save":[
+            "raven.raven.doctype.raven_notification.raven_notification.send_a_raven_for_method_event",
+		],
+        "before_save":[
+            "raven.raven.doctype.raven_notification.raven_notification.send_a_raven_for_method_event",
+		],
+        "before_rename":[
+            "raven.raven.doctype.raven_notification.raven_notification.send_a_raven_for_method_event",
+		],
+        "after_rename":[
+            "raven.raven.doctype.raven_notification.raven_notification.send_a_raven_for_method_event",
+		],
+        "before_submit":[
+            "raven.raven.doctype.raven_notification.raven_notification.send_a_raven_for_method_event",
+		],
+        "on_update_after_submit":[
+            "raven.raven.doctype.raven_notification.raven_notification.send_a_raven_for_method_event",
+		],
+        "before_submit":[
+            "raven.raven.doctype.raven_notification.raven_notification.send_a_raven_for_method_event",
+		],
+        "before_cancel":[
+            "raven.raven.doctype.raven_notification.raven_notification.send_a_raven_for_method_event",
+		],
+      
+        "after_delete":[
+            "raven.raven.doctype.raven_notification.raven_notification.send_a_raven_for_method_event",
+		],
+        "before_update_after_submit":[
+            "raven.raven.doctype.raven_notification.raven_notification.send_a_raven_for_method_event",
+		],
+        "on_trash":[
+            "raven.raven.doctype.raven_notification.raven_notification.send_a_raven_for_method_event",
+		],
+        
+        
+
+	},
+	
 	"User": {
 		"after_insert": "raven.raven.doctype.raven_user.raven_user.add_user_to_raven",
 		"on_update": "raven.raven.doctype.raven_user.raven_user.add_user_to_raven",
@@ -149,7 +212,18 @@ doc_events = {
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
+scheduler_events = {
+
+	# "cron":{
+       
+    #     },
+    # "all": [
+	# 	"raven.tasks.all"
+	# ],    
+	"daily": [
+		
+        "raven.raven.doctype.raven_notification.raven_notification.send_raven_for_daily"
+	],
 # "all": [
 # "raven.tasks.all"
 # ],
@@ -165,7 +239,7 @@ doc_events = {
 # "monthly": [
 # "raven.tasks.monthly"
 # ],
-# }
+}
 
 # Testing
 # -------
