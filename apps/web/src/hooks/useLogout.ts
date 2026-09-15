@@ -93,14 +93,13 @@ export function useLogout(): { logout: () => Promise<void>; isLoggingOut: boolea
 
         if (import.meta.env.VITE_NATIVE) {
             // Native: revoke the tokens, forget the site, wipe its local data, back to the picker.
-            const [{ signOut }, { forgetSite, loadSites }] = await Promise.all([import("../native/auth"), import("../native/sites")])
+            const [{ signOut }, { forgetSite }] = await Promise.all([import("../native/auth"), import("../native/sites")])
             await signOut(siteOrigin())
             await forgetSite(siteOrigin())
             // Logged out as far as the beforeunload cache writer is concerned; it wipes instead of persisting.
             clearSessionUser()
             clearLocalStorage()
-            // RavenDB is shared by every site on the device; only the last site's logout may drop it.
-            if ((await loadSites()).length === 0) await clearIndexedDB()
+            await clearIndexedDB()
             window.location.replace("/")
             return
         }

@@ -57,7 +57,8 @@ export const useComposerGate = (
     // resolved list drops members whose user records haven't loaded yet, so on
     // a refresh it could briefly miss the current user — flashing the
     // "not a member" banner before the composer.
-    const isMember = isDM || memberIds.includes(currentUser)
+    // member_id on the channel-list entry is the offline answer: the roster fetch needs the network.
+    const isMember = isDM || memberIds.includes(currentUser) || Boolean(channel?.member_id)
 
     // useJoinChannel updates the member store itself (including the roster
     // refresh), so the banner flips as soon as the join succeeds. Nothing
@@ -68,7 +69,7 @@ export const useComposerGate = (
     }, [joinChannel])
 
     let state: ComposerGateState
-    if (!channelsLoaded || (!isDM && membersLoading)) state = "loading"
+    if (!channelsLoaded || (!isDM && membersLoading && !channel?.member_id)) state = "loading"
     else if (isArchived) state = "archived"
     else if (isOpen || isMember) state = "composer"
     else state = "not-member"

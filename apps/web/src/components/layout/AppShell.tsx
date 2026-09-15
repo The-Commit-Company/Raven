@@ -17,6 +17,7 @@ import { useMessageRoomSubscriptions } from "@stores/messages/useMessageRoomSubs
 import { useMessagesRealtime } from "@stores/messages/useMessagesRealtime"
 import { useLinkPreviewsRealtime } from "@stores/linkPreviews/useLinkPreview"
 import { useConnectionFreshness } from "@hooks/useConnectionFreshness"
+import { useOnlineStatus } from "@stores/connectionState"
 import { useActiveSocketConnection } from "@hooks/useActiveSocketConnection"
 import { useOutboxAutoRetry } from "@stores/messages/useOutboxAutoRetry"
 import { useChannelListRealtime } from "@hooks/useChannelListRealtime"
@@ -224,9 +225,14 @@ const AppListeners = ({ children }: { children: React.ReactNode }) => {
 const AppShellLayout = ({ children }: { children: React.ReactNode }) => {
 
     const isMobile = useIsMobile()
+    const online = useOnlineStatus()
+    const banner = !online && (
+        <div className="shrink-0 bg-surface-gray-3 py-1 text-center text-sm text-ink-gray-7">{_("You're offline")}</div>
+    )
 
     if (isMobile) {
         return <div className="flex h-dvh flex-col overflow-hidden">
+            {banner}
             {children}
         </div>
     }
@@ -235,6 +241,7 @@ const AppShellLayout = ({ children }: { children: React.ReactNode }) => {
         <PrimarySidebar />
         <RavenSettingsDialog />
         <main className="flex min-w-0 flex-1 flex-col">
+            {banner}
             {children}
         </main>
     </div>

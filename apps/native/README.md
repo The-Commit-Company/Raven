@@ -72,3 +72,16 @@ Layer 1 of the bundled design: the app boots to a placeholder from `apps/web`.
   site as `http://127.0.0.1:8004`. The socket server calls the site back on the origin the
   client sends: `10.0.2.2` is not routable from the host, and the bench's Node resolves
   `localhost` to `::1`, where nothing listens.
+
+## Offline (tier 1)
+
+- Data at rest is kept only in the native app and an installed PWA (`offlineCacheEnabled`).
+- Per site: a Dexie database named by the site origin (users, outboxes, and the newest 20
+  messages of every visited channel or thread, written through from the message store),
+  plus the persisted SWR cache (channel list, workspaces, unread counts, profile) written
+  shortly after every change.
+- An offline cold start renders boot, the workspace, channels, unread counts, and the
+  cached messages; sends queue in the outbox and flush on reconnect; the cached windows
+  are never stamped fresh, so the freshness counter refetches them on reconnect.
+- Offline signal: `navigator.onLine` (`src/stores/connectionState.ts`) drives the banner,
+  the pagination guard, and the static edge rows in the stream.

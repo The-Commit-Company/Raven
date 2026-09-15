@@ -2,6 +2,7 @@ import * as React from "react"
 import * as AvatarPrimitive from "@radix-ui/react-avatar"
 
 import { cn } from "@lib/utils"
+import { useFileSrc } from "@hooks/useFileSrc"
 
 function Avatar({
   className,
@@ -19,14 +20,17 @@ function Avatar({
   )
 }
 
+// Private site files need the token in native; useFileSrc resolves them to object URLs.
 function AvatarImage({
   className,
+  src,
   ...props
 }: React.ComponentProps<typeof AvatarPrimitive.Image>) {
   return (
     <AvatarPrimitive.Image
       data-slot="avatar-image"
       className={cn("aspect-square size-full object-cover object-center", className)}
+      src={useFileSrc(src)}
       {...props}
     />
   )
