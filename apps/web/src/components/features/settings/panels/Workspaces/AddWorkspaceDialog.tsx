@@ -20,7 +20,6 @@ import { Label } from "@components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@components/ui/radio-group"
 import { FileDropzone } from "@components/ui/file-dropzone"
 import ErrorBanner from "@components/ui/error-banner"
-import { Spinner } from "@components/ui/spinner"
 import { hasRole } from "@lib/permissions"
 import type { RavenWorkspace } from "@raven/types/Raven/RavenWorkspace"
 import _ from "@lib/translate"
@@ -156,9 +155,8 @@ const AddWorkspaceForm = ({ onClose }: { onClose: (workspaceID?: string) => void
                     <DialogClose asChild>
                         <Button size="md" type="button" variant="outline" disabled={loading}>{_("Cancel")}</Button>
                     </DialogClose>
-                    <Button size="md" type="submit" disabled={loading}>
-                        {loading && <Spinner />}
-                        {loading ? _("Saving") : _("Save")}
+                    <Button size="md" type="submit" loading={loading} loadingText={_("Saving...")}>
+                        {_("Save")}
                     </Button>
                 </DialogFooter>
             </form>

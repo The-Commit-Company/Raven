@@ -4,6 +4,9 @@ import frappe
 from frappe import _
 from frappe.utils.caching import redis_cache
 
+from raven.api.raven_channel_member import add_channel_members
+from raven.api.workspaces import add_workspace_members
+
 
 @frappe.whitelist(methods=["GET"])
 def get_current_raven_user():
@@ -170,10 +173,27 @@ def add_users_to_raven(users: list[str] | str):
 
 
 @frappe.whitelist(methods=["POST"])
-def invite_user(email: str, first_name: str = None, last_name: str = None):
+def invite_user(
+	email: str,
+	first_name: str = None,
+	last_name: str = None,
+	workspaces: list[str] | str | None = None,
+	channels: list[str] | str | None = None,
+):
 	"""
 	Invites a user to Raven. If the user exists in Frappe, they are added to Raven.
+	Optionally adds them to the given workspaces and channels in the same call.
 	"""
+	if isinstance(workspaces, str):
+		workspaces = json.loads(workspaces)
+	workspaces = workspaces or []
+	if isinstance(channels, str):
+		channels = json.loads(channels)
+	channels = channels or []
+
+	# Check workspace access before touching the user, so a bad workspace fails early.
+	for workspace in workspaces:
+		frappe.has_permission("Raven Workspace", doc=workspace, ptype="write", throw=True)
 
 	existing_user = frappe.db.exists("User", {"email": email})
 
@@ -187,6 +207,7 @@ def invite_user(email: str, first_name: str = None, last_name: str = None):
 
 		user_doc.append("roles", {"role": "Raven User"})
 		user_doc.save()
+		add_user_to_workspaces_and_channels(user_doc.name, workspaces, channels)
 		return {"success": True, "message": "User added to Raven"}
 	else:
 		user_doc = frappe.new_doc("User")
@@ -196,7 +217,19 @@ def invite_user(email: str, first_name: str = None, last_name: str = None):
 		user_doc.send_welcome_email = 1
 		user_doc.append("roles", {"role": "Raven User"})
 		user_doc.insert()
+		add_user_to_workspaces_and_channels(user_doc.name, workspaces, channels)
 		return {"success": True, "message": "User added to Raven"}
+
+
+def add_user_to_workspaces_and_channels(user: str, workspaces: list[str], channels: list[str]):
+	"""
+	Workspaces first, since channel membership needs workspace membership.
+	Both calls run under the caller's own permissions.
+	"""
+	for workspace in workspaces:
+		add_workspace_members(workspace, [user])
+	for channel in channels:
+		add_channel_members(channel, [user])
 
 
 def get_employee_details(user: str):

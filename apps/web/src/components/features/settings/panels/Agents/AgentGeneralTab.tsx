@@ -8,7 +8,7 @@ import AINotEnabledCallout from "../ai/AINotEnabledCallout"
 import _ from "@lib/translate"
 
 /** General fields for a Raven Bot — name, description, and the AI agent toggle. */
-const AgentGeneralTab = () => {
+const AgentGeneralTab = ({ isEdit }: { isEdit?: boolean }) => {
     const { register } = useFormContext<RavenBot>()
     const isAiBot = useWatch<RavenBot>({ name: "is_ai_bot" })
     const isMobile = useIsMobile()
@@ -20,8 +20,9 @@ const AgentGeneralTab = () => {
                     name="bot_name"
                     label={_("Name")}
                     isRequired
+                    readOnly={isEdit}
                     rules={{ required: _("Name is required") }}
-                    inputProps={{ placeholder: "accounts-bot", autoFocus: !isMobile }}
+                    inputProps={{ placeholder: "accounts-bot", autoFocus: !isMobile && !isEdit }}
                 />
             </div>
             <div className="flex flex-col gap-1.5">
@@ -29,6 +30,7 @@ const AgentGeneralTab = () => {
                 <Textarea
                     id="description"
                     {...register("description")}
+                    autoFocus={isEdit}
                     rows={5}
                     placeholder={_("A bot to handle accounts")}
                 />

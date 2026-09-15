@@ -17,7 +17,6 @@ import {
 import ErrorBanner from "@components/ui/error-banner"
 import { Input } from "@components/ui/input"
 import { Label } from "@components/ui/label"
-import { Spinner } from "@components/ui/spinner"
 import { lastWorkspaceAtom } from "@utils/lastVisitedAtoms"
 import _ from "@lib/translate"
 
@@ -123,9 +122,8 @@ const RenameWorkspaceForm = ({
                 <DialogClose asChild>
                     <Button size="md" type="button" variant="outline" disabled={loading}>{_("Close")}</Button>
                 </DialogClose>
-                <Button size="md" type="button" disabled={loading || !name} onClick={handleSubmit}>
-                    {loading && <Spinner />}
-                    {loading ? _("Renaming...") : _("Rename")}
+                <Button size="md" type="button" disabled={!name} onClick={handleSubmit} loading={loading} loadingText={_("Renaming")}>
+                    {_("Rename")}
                 </Button>
             </DialogFooter>
         </>
@@ -174,9 +172,8 @@ const DeleteWorkspaceForm = ({
             </div>
             <AlertDialogFooter>
                 <AlertDialogCancel disabled={loading}>{_("Cancel")}</AlertDialogCancel>
-                <Button variant="solid" theme="red" disabled={loading || !isNameTyped} onClick={handleDelete}>
-                    {loading && <Spinner />}
-                    {loading ? _("Deleting...") : _("Delete")}
+                <Button variant="solid" theme="red" size="md" disabled={!isNameTyped} onClick={handleDelete} loading={loading} loadingText={_("Deleting")}>
+                    {_("Delete")}
                 </Button>
             </AlertDialogFooter>
         </>

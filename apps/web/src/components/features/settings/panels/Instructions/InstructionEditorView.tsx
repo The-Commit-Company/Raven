@@ -15,7 +15,8 @@ const InstructionEditorView = (props: Props) => (
         createDefaults={{ template_name: "", instruction: "", dynamic_instructions: 0 }}
         createTitle={_("Create an Instruction Template")}
         backLabel={_("Back to instruction templates")}
-        deleteDescription={_("This will permanently delete this instruction template.")}
+        deleteTitle={_("Delete Instruction Template?")}
+        deleteDescription={(doc) => _("This will permanently delete {0}.", [doc.template_name])}
         title={(doc) => doc.template_name}
         form={(isEdit) => <InstructionTemplateForm isEdit={isEdit} />}
     />

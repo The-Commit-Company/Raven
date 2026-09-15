@@ -15,6 +15,18 @@ import useSaveHotkey from "@hooks/useSaveHotkey"
 import RecordActionsMenu from "./RecordActionsMenu"
 import _ from "@lib/translate"
 
+/** What a custom menu item gets: the loaded record, the busy flag, and a safe way to change the record. */
+export type RecordMenuContext<T extends FieldValues> = {
+    doc: T
+    loading: boolean
+    /**
+     * Saves a partial update right away, then refreshes the form's defaults from the saved
+     * doc (new values, new `modified` stamp) while keeping the user's unsaved edits. A later
+     * Save then neither undoes this change nor trips Frappe's timestamp check.
+     */
+    update: (values: Partial<T>, successMessage: string) => Promise<void>
+}
+
 type Props<T extends FieldValues> = {
     /** Set for detail/edit mode; absent for create mode. */
     id?: string
@@ -24,11 +36,20 @@ type Props<T extends FieldValues> = {
     createDefaults: DefaultValues<T>
     createTitle: string
     backLabel: string
-    deleteDescription: string
+    /** Confirm-dialog heading, e.g. "Delete Webhook?". */
+    deleteTitle: string
+    /** Confirm-dialog body. Gets the record so it can show its title, not its id. */
+    deleteDescription: (doc: T) => string
     title: (doc: T) => ReactNode
     form: (isEdit: boolean) => ReactNode
     /** Extra detail-mode header actions, rendered before Save. */
     actions?: (doc: T) => ReactNode
+    /** Extra items for the actions menu, rendered above Delete. */
+    menu?: (ctx: RecordMenuContext<T>) => ReactNode
+    /** Status badge next to the title. Hidden while there are unsaved changes. */
+    badge?: (doc: T) => ReactNode
+    /** Toast after a successful delete. Defaults to "Deleted". */
+    deleteSuccessMessage?: string
     onBack: () => void
     onSaved?: (id: string) => void
     onDeleted?: () => void
@@ -68,9 +89,8 @@ const Create = <T extends FieldValues>({
             <form onSubmit={handleSubmit(onSubmit)} className="contents">
                 <SettingsPanelHeader
                     actions={
-                        <Button type="submit" size="sm" disabled={loading}>
-                            {loading && <Spinner />}
-                            {loading ? _("Creating") : _("Create")}
+                        <Button type="submit" size="sm" loading={loading} loadingText={_("Creating")}>
+                            {_("Create")}
                         </Button>
                     }
                 >
@@ -89,7 +109,7 @@ const Create = <T extends FieldValues>({
 }
 
 const Detail = <T extends FieldValues>(props: Props<T> & { id: string }) => {
-    const { data, isLoading, error, mutate } = useFrappeGetDoc<T>(props.doctype, props.id)
+    const { data, isLoading, error, mutate } = useFrappeGetDoc<T>(props.doctype, props.id, undefined, { errorRetryCount: 2 })
 
     if (error) {
         return (
@@ -109,7 +129,8 @@ const Detail = <T extends FieldValues>(props: Props<T> & { id: string }) => {
 }
 
 const DetailContent = <T extends FieldValues>({
-    id, doctype, listKey, createDefaults, backLabel, deleteDescription, title, form, actions, onBack, onDeleted, data, mutate,
+    id, doctype, listKey, createDefaults, backLabel, deleteTitle, deleteDescription, deleteSuccessMessage,
+    title, form, actions, menu, badge, onBack, onDeleted, data, mutate,
 }: Props<T> & { id: string; data: T; mutate: SWRResponse<FrappeDoc<T>>["mutate"] }) => {
     const { updateDoc, loading, error } = useFrappeUpdateDoc<T>()
     const { mutate: globalMutate } = useSWRConfig()
@@ -128,6 +149,15 @@ const DetailContent = <T extends FieldValues>({
 
     useSaveHotkey(() => { if (!loading) handleSubmit(onSubmit)() })
 
+    // See RecordMenuContext.update.
+    const update = async (values: Partial<T>, successMessage: string) => {
+        const doc = await updateDoc(doctype, id, values)
+        toast.success(successMessage, { id: SAVE_TOAST_ID })
+        methods.reset({ ...createDefaults, ...doc } as T, { keepDirtyValues: true })
+        mutate(doc, { revalidate: false })
+        await globalMutate((key) => typeof key === "string" && key.startsWith(listKey))
+    }
+
     return (
         <Form {...methods}>
             <form onSubmit={handleSubmit(onSubmit)} className="contents">
@@ -137,16 +167,19 @@ const DetailContent = <T extends FieldValues>({
                             <RecordActionsMenu
                                 doctype={doctype}
                                 docName={id}
-                                deleteDescription={deleteDescription}
+                                deleteTitle={deleteTitle}
+                                deleteDescription={deleteDescription(data)}
+                                deleteSuccessMessage={deleteSuccessMessage}
                                 onDeleted={async () => {
                                     await globalMutate((key) => typeof key === "string" && key.startsWith(listKey))
                                     onDeleted?.()
                                 }}
-                            />
+                            >
+                                {menu?.({ doc: data, loading, update })}
+                            </RecordActionsMenu>
                             {actions?.(data)}
-                            <Button type="submit" size="sm" disabled={loading}>
-                                {loading && <Spinner />}
-                                {loading ? _("Saving") : _("Save")}
+                            <Button type="submit" size="sm" loading={loading} loadingText={_("Saving")}>
+                                {_("Save")}
                             </Button>
                         </div>
                     }
@@ -154,7 +187,7 @@ const DetailContent = <T extends FieldValues>({
                     <SettingsPanelTitle className="items-center h-auto -ml-2">
                         <BackButton onBack={onBack} label={backLabel} />
                         {title(data)}
-                        {hasChanges && <Badge variant="subtle">{_("Not Saved")}</Badge>}
+                        {hasChanges ? <Badge variant="subtle">{_("Not Saved")}</Badge> : badge?.(data)}
                     </SettingsPanelTitle>
                 </SettingsPanelHeader>
                 <SettingsPanelContent className="min-h-0 gap-4">

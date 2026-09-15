@@ -13,7 +13,6 @@ import {
     SettingsPanelContent, SettingsPanelDescription, SettingsPanelHeader, SettingsPanelTitle,
 } from "@components/ui/settings-dialog"
 import { Skeleton } from "@components/ui/skeleton"
-import { Spinner } from "@components/ui/spinner"
 import { isRavenSettingsAdmin } from "../AdminSettingsForm"
 import { useRavenSettings } from "@hooks/fetchers/useRavenSettings"
 import AINotEnabledCallout from "../ai/AINotEnabledCallout"
@@ -122,9 +121,11 @@ const DocumentProcessors = () => {
                     <Button
                         size="sm"
                         onClick={handleCreateProcessor}
-                        disabled={!selectedProcessorType || creating}
+                        disabled={!selectedProcessorType}
+                        loading={creating}
+                        loadingText={_("Creating")}
                     >
-                        {creating ? <Spinner /> : <PlusIcon />}
+                        <PlusIcon />
                         {_("Create Processor")}
                     </Button>
                 }
@@ -252,7 +253,9 @@ const ExistingProcessorsList = ({
                                 <Button
                                     variant="solid"
                                     theme="red"
-                                    disabled={isDeleting}
+                                    size="md"
+                                    loading={isDeleting}
+                                    loadingText={_("Deleting")}
                                     onClick={() => {
                                         if (!processorToDelete) return
                                         onDeleteProcessor(processorToDelete.id, processorToDelete.display_name).then(
@@ -260,7 +263,6 @@ const ExistingProcessorsList = ({
                                         )
                                     }}
                                 >
-                                    {isDeleting && <Spinner />}
                                     {_("Delete Processor")}
                                 </Button>
                             </AlertDialogFooter>

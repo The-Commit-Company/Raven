@@ -6,7 +6,7 @@ import { Badge } from "@components/ui/badge"
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@components/ui/empty"
 import { Button } from "@components/ui/button"
 import {
-    Dialog, DialogContent, DialogDescription, DialogFooter,
+    Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter,
     DialogHeader, DialogTitle, DialogTrigger, DialogClose,
 } from "@components/ui/dialog"
 import {
@@ -218,29 +218,28 @@ const AddWorkspaceMembersDialog = ({
                     {_("Add Members")}
                 </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[520px] max-h-[80vh] flex flex-col">
+            <DialogContent className="sm:max-w-[520px] max-h-[80vh]">
                 <DialogHeader>
                     <DialogTitle>{_("Add Members")}</DialogTitle>
                     <DialogDescription>{_("Add members to your workspace.")}</DialogDescription>
                 </DialogHeader>
                 {error && <ErrorBanner error={error} />}
-                {/* Fixed height like AddChannelMembers — the picker's virtuoso list
-                    needs a computable height; flex-1 inside a content-sized dialog
-                    resolves to 0. */}
-                <div className="flex h-[24rem] min-h-0 flex-col gap-3">
+                {/* Fixed height (flex-none) like AddChannelMembers — the picker's virtuoso
+                    list needs a computable height; DialogBody's flex-1 inside a
+                    content-sized dialog resolves to 0. */}
+                <DialogBody className="flex h-[24rem] flex-none flex-col gap-3">
                     <AddMembersStep
                         selectedUsers={selectedUsers}
                         onSelectUsers={setSelectedUsers}
                         excludeUserIds={existingMemberIds}
                         emptyText={_("Everyone is already a member of this workspace.")}
                     />
-                </div>
+                </DialogBody>
                 <DialogFooter>
                     <DialogClose asChild>
                         <Button size="md" type="button" variant="outline" disabled={loading}>{_("Cancel")}</Button>
                     </DialogClose>
-                    <Button size="md" type="button" onClick={onSubmit} disabled={selectedUsers.length === 0 || loading}>
-                        {loading && <Spinner />}
+                    <Button size="md" type="button" onClick={onSubmit} disabled={selectedUsers.length === 0} loading={loading} loadingText={_("Adding members...")}>
                         {_("Add {0} members", [String(selectedUsers.length)])}
                     </Button>
                 </DialogFooter>

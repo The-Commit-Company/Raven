@@ -15,7 +15,6 @@ import {
 import ErrorBanner from "@components/ui/error-banner"
 import { FileDropzone } from "@components/ui/file-dropzone"
 import { Form } from "@components/ui/form"
-import { Spinner } from "@components/ui/spinner"
 import _ from "@lib/translate"
 
 type UploadDocDialogProps<T extends FieldValues> = {
@@ -142,9 +141,8 @@ const UploadDocDialog = <T extends FieldValues>({
                             <Button type="button" variant="outline" size="md" onClick={() => setOpen(false)} disabled={busy}>
                                 {_("Cancel")}
                             </Button>
-                            <Button type="submit" size="md" disabled={busy || files.length === 0}>
-                                {busy && <Spinner />}
-                                {busy ? (submitBusyLabel ?? _("Saving...")) : (submitLabel ?? _("Upload"))}
+                            <Button type="submit" size="md" disabled={files.length === 0} loading={busy} loadingText={submitBusyLabel ?? _("Uploading")}>
+                                {submitLabel ?? _("Upload")}
                             </Button>
                         </DialogFooter>
                     </form>

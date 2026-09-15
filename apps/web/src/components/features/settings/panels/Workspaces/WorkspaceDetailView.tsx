@@ -100,9 +100,8 @@ const WorkspaceDetailContent = ({
                                     onDeleted={onBack}
                                     onRenamed={() => onBack()}
                                 />
-                                <Button type="submit" size="sm" disabled={loading || !isDirty}>
-                                    {loading && <Spinner />}
-                                    {loading ? _("Saving") : _("Save")}
+                                <Button type="submit" size="sm" disabled={!isDirty} loading={loading} loadingText={_("Saving")}>
+                                    {_("Save")}
                                 </Button>
                             </div>
                         ) : null

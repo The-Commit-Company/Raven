@@ -11,7 +11,6 @@ import {
     DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu"
 import ErrorBanner from "@components/ui/error-banner"
-import { Spinner } from "@components/ui/spinner"
 import _ from "@lib/translate"
 
 type Props = {
@@ -19,7 +18,9 @@ type Props = {
     doctype: string
     /** Name of the record to delete. */
     docName: string
-    /** Confirm-dialog body text. */
+    /** Confirm-dialog heading, e.g. "Delete Webhook?". */
+    deleteTitle: string
+    /** Confirm-dialog body text. Should name the record being deleted. */
     deleteDescription: string
     /** Toast on success. Defaults to "Deleted". */
     deleteSuccessMessage?: string
@@ -31,7 +32,7 @@ type Props = {
 
 /** Kebab menu for a settings detail/edit view: any extra actions, then Delete (confirmed). */
 export const RecordActionsMenu = ({
-    doctype, docName, deleteDescription, deleteSuccessMessage, onDeleted, children,
+    doctype, docName, deleteTitle, deleteDescription, deleteSuccessMessage, onDeleted, children,
 }: Props) => {
     const [deleteOpen, setDeleteOpen] = useState(false)
     const { deleteDoc, loading, error } = useFrappeDeleteDoc()
@@ -65,15 +66,14 @@ export const RecordActionsMenu = ({
             <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>{docName}</AlertDialogTitle>
+                        <AlertDialogTitle>{deleteTitle}</AlertDialogTitle>
                         <AlertDialogDescription>{deleteDescription}</AlertDialogDescription>
                     </AlertDialogHeader>
                     {error && <ErrorBanner error={error} />}
                     <AlertDialogFooter>
                         <AlertDialogCancel disabled={loading}>{_("Cancel")}</AlertDialogCancel>
-                        <Button variant="solid" theme="red" disabled={loading} onClick={onDelete}>
-                            {loading && <Spinner />}
-                            {loading ? _("Deleting") : _("Delete")}
+                        <Button variant="solid" theme="red" size="md" onClick={onDelete} loading={loading} loadingText={_("Deleting")}>
+                            {_("Delete")}
                         </Button>
                     </AlertDialogFooter>
                 </AlertDialogContent>

@@ -102,9 +102,9 @@ const ProfileForm = ({ myProfile }: { myProfile: RavenUser }) => {
                     <Button
                         type="submit"
                         form={FORM_ID}
-                        size="md"
+                        size="sm"
                         loading={form.formState.isSubmitting}
-                        loadingText={_("Saving...")}
+                        loadingText={_("Saving")}
                         disabled={!form.formState.isDirty}
                     >
                         {_("Save")}

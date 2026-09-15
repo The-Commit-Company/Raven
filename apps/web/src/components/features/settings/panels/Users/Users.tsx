@@ -1,5 +1,5 @@
-import { useMemo, useSyncExternalStore } from "react"
-import { UsersIcon } from "lucide-react"
+import { useDeferredValue, useMemo, useState, useSyncExternalStore } from "react"
+import { SearchIcon, UsersIcon } from "lucide-react"
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@components/ui/empty"
 import {
     SettingsPanelContent,
@@ -10,6 +10,7 @@ import {
 import { ListView, type ListViewColumnMeta } from "@components/ui/list-view"
 import type { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@components/ui/badge"
+import { Input } from "@components/ui/input"
 import { UserAvatar } from "@components/features/message/UserAvatar"
 import { usersStore } from "@stores/usersStore"
 import { hasRole } from "@lib/permissions"
@@ -20,6 +21,9 @@ import AddUserDialog from "./AddUserDialog"
 /** Workspace → Users: everyone with access to Raven (bots excluded). */
 export const Users = () => {
     const usersMap = useSyncExternalStore(usersStore.subscribe, usersStore.getSnapshot)
+    const [search, setSearch] = useState("")
+    // Filtering is in memory. Deferring keeps typing smooth on big user lists.
+    const query = useDeferredValue(search.trim().toLowerCase())
 
     const humanUsers = useMemo(
         () =>
@@ -29,18 +33,38 @@ export const Users = () => {
         [usersMap],
     )
 
+    // Match on name or email.
+    const visibleUsers = useMemo(
+        () => query
+            ? humanUsers.filter((user) => user.full_name?.toLowerCase().includes(query) || user.name.toLowerCase().includes(query))
+            : humanUsers,
+        [humanUsers, query],
+    )
+
     return (
         <>
             <SettingsPanelHeader actions={hasRole("System Manager") ? <AddUserDialog /> : null}>
                 <SettingsPanelTitle>{_("Users")}</SettingsPanelTitle>
                 <SettingsPanelDescription>{_("Manage users added to Raven.")}</SettingsPanelDescription>
             </SettingsPanelHeader>
-            <SettingsPanelContent className="min-h-0">
+            <SettingsPanelContent className="min-h-0 gap-4">
+                <div className="relative mt-0.5">
+                    <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-gray-4" aria-hidden="true" />
+                    <Input
+                        inputSize="sm"
+                        type="search"
+                        className="pl-9"
+                        placeholder={_("Search by name or email")}
+                        aria-label={_("Search users")}
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                </div>
                 <ListView
                     className="flex-1 min-h-0"
                     scrollAreaClassName="flex-1"
                     maxHeight="100%"
-                    data={humanUsers}
+                    data={visibleUsers}
                     columns={userColumns}
                     getRowId={(row) => row.name}
                     rowHeight={44}
@@ -51,7 +75,11 @@ export const Users = () => {
                             </EmptyMedia>
                             <EmptyHeader>
                                 <EmptyTitle>{_("No users found")}</EmptyTitle>
-                                <EmptyDescription>{_("Users added to Raven will show up here.")}</EmptyDescription>
+                                <EmptyDescription>
+                                    {query
+                                        ? _("No users match your search.")
+                                        : _("Users added to Raven will show up here.")}
+                                </EmptyDescription>
                             </EmptyHeader>
                         </Empty>
                     }

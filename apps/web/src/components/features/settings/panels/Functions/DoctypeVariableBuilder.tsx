@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { useFieldArray, useFormContext, useWatch, type UseFieldArrayUpdate } from "react-hook-form"
-import { PencilIcon, Trash2Icon } from "lucide-react"
+import { SquarePenIcon, Trash2Icon } from "lucide-react"
 import { cn } from "@lib/utils"
 import _ from "@lib/translate"
 import { Badge } from "@components/ui/badge"
@@ -176,7 +176,7 @@ const EditDoctypeVariableDialog = ({ onEdit, field, doctype }: {
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button type="button" variant="ghost" size="sm" isIconButton aria-label={_("Edit")}>
-                    <PencilIcon />
+                    <SquarePenIcon />
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-xl">

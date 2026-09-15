@@ -23,7 +23,8 @@ const AgentEditorView = (props: Props) => (
         createDefaults={{ bot_name: "", description: "", is_ai_bot: 0, enable_file_search: 1, enable_code_interpreter: 1 }}
         createTitle={_("Create an Agent")}
         backLabel={_("Back to agents")}
-        deleteDescription={_("This will permanently delete this agent.")}
+        deleteTitle={_("Delete Agent?")}
+        deleteDescription={(doc) => _("This will permanently delete {0}.", [doc.bot_name])}
         title={(doc) => <span className="truncate max-w-[24rem]">{doc.bot_name}</span>}
         actions={(doc) => <OpenChatButton bot={doc} />}
         form={(isEdit) => <AgentForm isEdit={isEdit} />}

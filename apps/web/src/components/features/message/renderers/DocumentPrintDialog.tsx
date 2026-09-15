@@ -4,6 +4,7 @@ import { Button } from "@components/ui/button"
 import {
     Dialog,
     DialogContent,
+    DialogBody,
     DialogDescription,
     DialogFooter,
     DialogHeader,
@@ -79,57 +80,59 @@ export const DocumentPrintDialog = ({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="flex h-[85dvh] flex-col gap-3 sm:max-w-4xl">
+            <DialogContent className="h-[85dvh] gap-3 sm:max-w-4xl">
                 <DialogHeader>
                     <DialogTitle>{_("Print {0}", [docname])}</DialogTitle>
                     <DialogDescription>{doctype}</DialogDescription>
                 </DialogHeader>
 
-                <div className="flex flex-wrap items-end gap-3">
-                    <div className="flex min-w-40 flex-col gap-1">
-                        <Label htmlFor="print-format">{_("Print format")}</Label>
-                        <Select
-                            value={format}
-                            onValueChange={(value) => {
-                                formatTouchedRef.current = true
-                                setFormat(value)
-                            }}
-                        >
-                            <SelectTrigger id="print-format" className="min-w-40">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {formats.map((name) => (
-                                    <SelectItem key={name} value={name}>
-                                        {name}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                <DialogBody className="flex flex-col gap-3">
+                    <div className="flex flex-wrap items-end gap-3">
+                        <div className="flex min-w-40 flex-col gap-1">
+                            <Label htmlFor="print-format">{_("Print format")}</Label>
+                            <Select
+                                value={format}
+                                onValueChange={(value) => {
+                                    formatTouchedRef.current = true
+                                    setFormat(value)
+                                }}
+                            >
+                                <SelectTrigger id="print-format" className="min-w-40">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {formats.map((name) => (
+                                        <SelectItem key={name} value={name}>
+                                            {name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="flex min-w-40 flex-col gap-1">
+                            <Label>{_("Letterhead")}</Label>
+                            <LinkFieldCombobox
+                                doctype="Letter Head"
+                                value={letterhead}
+                                onChange={setLetterhead}
+                                placeholder={_("Default")}
+                            />
+                        </div>
+                        <div className="flex min-w-40 flex-col gap-1">
+                            <Label>{_("Language")}</Label>
+                            <LinkFieldCombobox doctype="Language" value={language} onChange={setLanguage} />
+                        </div>
                     </div>
-                    <div className="flex min-w-40 flex-col gap-1">
-                        <Label>{_("Letterhead")}</Label>
-                        <LinkFieldCombobox
-                            doctype="Letter Head"
-                            value={letterhead}
-                            onChange={setLetterhead}
-                            placeholder={_("Default")}
-                        />
-                    </div>
-                    <div className="flex min-w-40 flex-col gap-1">
-                        <Label>{_("Language")}</Label>
-                        <LinkFieldCombobox doctype="Language" value={language} onChange={setLanguage} />
-                    </div>
-                </div>
 
-                {/* key: a picker change swaps the URL and remounts the iframe — simpler
-                    and more reliable than reaching into a cross-document navigation. */}
-                <iframe
-                    key={previewUrl}
-                    src={previewUrl}
-                    title={_("Print preview")}
-                    className="w-full flex-1 rounded-md border border-outline-gray-2 bg-white"
-                />
+                    {/* key: a picker change swaps the URL and remounts the iframe — simpler
+                        and more reliable than reaching into a cross-document navigation. */}
+                    <iframe
+                        key={previewUrl}
+                        src={previewUrl}
+                        title={_("Print preview")}
+                        className="w-full min-h-0 flex-1 rounded-md border border-outline-gray-2 bg-white"
+                    />
+                </DialogBody>
 
                 <DialogFooter>
                     <Button variant="outline" onClick={onDownloadPdf}>

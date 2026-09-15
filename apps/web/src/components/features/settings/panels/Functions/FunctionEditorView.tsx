@@ -15,7 +15,8 @@ const FunctionEditorView = (props: Props) => (
         createDefaults={{ function_name: "", description: "", reference_doctype: "", function_path: "", params: { type: "object", properties: {} } }}
         createTitle={_("Create a Function")}
         backLabel={_("Back to functions")}
-        deleteDescription={_("This will permanently delete this function.")}
+        deleteTitle={_("Delete Function?")}
+        deleteDescription={(doc) => _("This will permanently delete {0}.", [doc.function_name])}
         title={(doc) => doc.name}
         form={(isEdit) => <FunctionForm isEdit={isEdit} />}
     />

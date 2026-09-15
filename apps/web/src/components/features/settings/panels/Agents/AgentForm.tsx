@@ -31,37 +31,37 @@ const AgentForm = ({ isEdit }: { isEdit?: boolean }) => {
             {/* Scroll on a wrapper — the underline indicator hangs 1px below the list and a scroll container would clip it. */}
             <div className="max-w-full overflow-x-auto">
                 <TabsList className="w-max min-w-full">
-                <TabsTrigger value="general">
-                    <BotIcon /> {_("General")}
-                </TabsTrigger>
-                {!!isAiBot && (
-                    <>
-                        <TabsTrigger value="ai">
-                            <SparklesIcon /> {_("AI")}
-                        </TabsTrigger>
-                        <TabsTrigger value="instructions">
-                            <FileTextIcon /> {_("Instructions")}
-                        </TabsTrigger>
-                        <TabsTrigger value="functions">
-                            <SquareFunctionIcon /> {_("Functions")}
-                        </TabsTrigger>
-                        <TabsTrigger value="document-processors">
-                            <CpuIcon /> {_("Document Processors")}
-                        </TabsTrigger>
-                        <TabsTrigger value="files">
-                            <FolderIcon /> {_("Files")}
-                        </TabsTrigger>
-                    </>
-                )}
-                {isEdit && (
-                    <TabsTrigger value="api-docs">
-                        <CodeIcon /> {_("API Docs")}
+                    <TabsTrigger value="general">
+                        <BotIcon /> {_("General")}
                     </TabsTrigger>
-                )}
+                    {!!isAiBot && (
+                        <>
+                            <TabsTrigger value="ai">
+                                <SparklesIcon /> {_("AI")}
+                            </TabsTrigger>
+                            <TabsTrigger value="instructions">
+                                <FileTextIcon /> {_("Instructions")}
+                            </TabsTrigger>
+                            <TabsTrigger value="functions">
+                                <SquareFunctionIcon /> {_("Functions")}
+                            </TabsTrigger>
+                            <TabsTrigger value="document-processors">
+                                <CpuIcon /> {_("Document Processors")}
+                            </TabsTrigger>
+                            <TabsTrigger value="files">
+                                <FolderIcon /> {_("Files")}
+                            </TabsTrigger>
+                        </>
+                    )}
+                    {isEdit && (
+                        <TabsTrigger value="api-docs">
+                            <CodeIcon /> {_("API Docs")}
+                        </TabsTrigger>
+                    )}
                 </TabsList>
             </div>
             <TabsContent value="general" forceMount className="pt-4 data-[state=inactive]:hidden">
-                <AgentGeneralTab />
+                <AgentGeneralTab isEdit={isEdit} />
             </TabsContent>
             <TabsContent value="ai" forceMount className="pt-4 data-[state=inactive]:hidden">
                 <AgentAITab />

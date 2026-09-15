@@ -5,7 +5,7 @@ import { Dialog } from '@components/ui/dialog';
 import { SettingsDialog, SettingsPanel, SettingsPanelContent, SettingsPanelDescription, SettingsPanelHeader, SettingsPanels, SettingsPanelTitle, SettingsTabGroup, SettingsTabItem, SettingsTabs } from '@components/ui/settings-dialog';
 import { Spinner } from '@components/ui/spinner';
 import _ from '@lib/translate'
-import { atom, useAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { BellDotIcon, BellRingIcon, BotIcon, BrainCogIcon, Building2Icon, CalendarSyncIcon, CpuIcon, FileTextIcon, FolderIcon, FunctionSquareIcon, IdCardIcon, InfoIcon, KeyboardIcon, PaletteIcon, PanelLeftIcon, SlidersHorizontalIcon, SmilePlusIcon, UserIcon, UsersIcon, WebhookIcon, ZapIcon } from 'lucide-react'
 import { useHotkeys } from 'react-hotkeys-hook';
 import useCurrentRavenUser from '@raven/lib/hooks/useCurrentRavenUser';
@@ -27,17 +27,15 @@ const About = lazy(() => import('./panels/About').then((m) => ({ default: m.Abou
 const AISettingsPanel = lazy(() => import('./panels/AISettings').then((m) => ({ default: m.AISettings })));
 const FrappeHRPanel = lazy(() => import('./panels/FrappeHR').then((m) => ({ default: m.FrappeHR })));
 const NotificationsPanel = lazy(() => import('./panels/PushNotifications').then((m) => ({ default: m.PushNotifications })));
-// Not-yet-built panels — each has its own file (renders a PlaceholderPanel for
-// now) so building out the real UI later is just filling in that file.
 const UsersPanel = lazy(() => import('./panels/Users/Users').then((m) => ({ default: m.Users })));
 const WorkspacesPanel = lazy(() => import('./panels/Workspaces/Workspaces').then((m) => ({ default: m.Workspaces })));
 const ChannelsPanel = lazy(() => import('./panels/Channels/Channels').then((m) => ({ default: m.Channels })));
 const EmojisPanel = lazy(() => import('./panels/Emojis/Emojis').then((m) => ({ default: m.Emojis })));
-const DocumentNotificationsPanel = lazy(() => import('./panels/DocumentNotifications').then((m) => ({ default: m.DocumentNotifications })));
+const DocumentNotificationsPanel = lazy(() => import('./panels/DocumentNotifications/DocumentNotifications').then((m) => ({ default: m.DocumentNotifications })));
 const DocumentPreviewsPanel = lazy(() => import('./panels/DocumentPreviews').then((m) => ({ default: m.DocumentPreviews })));
-const MessageActionsPanel = lazy(() => import('./panels/MessageActions').then((m) => ({ default: m.MessageActions })));
+const MessageActionsPanel = lazy(() => import('./panels/MessageActions/MessageActions').then((m) => ({ default: m.MessageActions })));
 const ScheduledMessagesPanel = lazy(() => import('./panels/ScheduledMessages').then((m) => ({ default: m.ScheduledMessages })));
-const WebhooksPanel = lazy(() => import('./panels/Webhooks').then((m) => ({ default: m.Webhooks })));
+const WebhooksPanel = lazy(() => import('./panels/Webhooks/Webhooks').then((m) => ({ default: m.Webhooks })));
 const AgentsPanel = lazy(() => import('./panels/Agents/Agents').then((m) => ({ default: m.Agents })));
 const FunctionsPanel = lazy(() => import('./panels/Functions/Functions').then((m) => ({ default: m.Functions })));
 const FileSourcesPanel = lazy(() => import('./panels/FileSources/FileSources').then((m) => ({ default: m.FileSources })));

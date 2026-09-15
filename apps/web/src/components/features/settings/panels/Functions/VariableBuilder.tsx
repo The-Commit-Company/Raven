@@ -1,7 +1,7 @@
 import * as React from "react"
 import { useState } from "react"
 import { Controller, useFormContext, useWatch } from "react-hook-form"
-import { PencilIcon, Trash2Icon } from "lucide-react"
+import { SquarePenIcon, Trash2Icon } from "lucide-react"
 import { toast } from "sonner"
 import _ from "@lib/translate"
 import { Badge } from "@components/ui/badge"
@@ -164,7 +164,7 @@ const VariableBuilderField = ({ json, onChange, isNested }: { json: ObjectVariab
                                 aria-label={_("Edit")}
                                 onClick={() => setEditingVariable({ name: key, properties: value, required: (json.required ?? []).includes(key) })}
                             >
-                                <PencilIcon />
+                                <SquarePenIcon />
                             </Button>
                             <Button
                                 type="button"

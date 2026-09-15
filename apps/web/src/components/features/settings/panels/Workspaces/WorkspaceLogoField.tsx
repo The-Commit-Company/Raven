@@ -12,7 +12,6 @@ import {
 } from "@components/ui/dropdown-menu"
 import { FileDropzone } from "@components/ui/file-dropzone"
 import ErrorBanner from "@components/ui/error-banner"
-import { Spinner } from "@components/ui/spinner"
 import _ from "@lib/translate"
 import type { WorkspaceFormData } from "./WorkspaceDetailView"
 
@@ -135,8 +134,7 @@ const UploadLogoDialog = ({
                     accept={{ "image/*": [".jpeg", ".jpg", ".png", ".svg", ".webp"] }}
                 />
                 <DialogFooter>
-                    <Button size="md" type="button" onClick={onUpload} disabled={files.length === 0 || loading}>
-                        {loading && <Spinner />}
+                    <Button size="md" type="button" onClick={onUpload} disabled={files.length === 0} loading={loading} loadingText={_("Uploading")}>
                         {_("Upload")}
                     </Button>
                 </DialogFooter>
